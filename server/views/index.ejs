@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>ozkary-realtime</title>
+        <meta name="description" content="Realtime web application with Nodejs, socket.IO and redis">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/core.css">
+
+        <style>
+
+        	input:focus,
+			select:focus,
+			textarea:focus,
+			button:focus {
+			    outline: none !important;
+			}
+
+        	#allPosts {
+			    resize: none;
+			    font-size: 12px;
+			    border-radius: 5px;
+			    border: #ccc solid 1px;
+			    line-height: 14px;
+			    height:100px;
+			    overflow: scroll;
+			}
+
+			p{
+		    	margin:0;
+		    	padding:0;
+		    }
+
+		</style>
+    </head>
+    <body>
+
+	<!--[if lt IE 8]>
+		<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+
+    <div class="container">
+    	<div class="jumbotron">
+        	<h1>ozkary-realtime</h1>
+       		<p>Realtime web application with Nodejs, socket.IO and redis</p>
+       		<div class="row">
+       			<div class="col-md-4 col-sm-6 col-xs-6">
+       				<h3>Telemetry Information<button id="clearAllPosts" type="button" class="btn btn-danger btn-xs pull-right">clear</button></h3>
+       				<div id="allPosts" class="form-control" style="height:350px;"></div>
+				    <div class="input-group">
+						<input style="width:350px;" id="blast" type="text" class="form-control" placeholder="Add message" readonly>
+						
+						<span class="input-group-btn">
+							<button id="send" class="btn btn-danger" title="Press to send the item" type="button">Run</button>
+							<button id="add" class="btn btn-success" title="Press to add another item" type="button">Add</button>
+						</span>
+				    </div><!-- /input-group -->
+       			</div>
+       		</div>
+		</div>
+	</div>
+    
+    <!-- jQuery --> 
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="public/bower_components/jQuery/jquery.min.js"><\/script>')</script>
+
+    <!-- socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+
+	<!-- APP CODE -->
+	<script src="js/app.js"></script>
+	
+    </body>
+</html>

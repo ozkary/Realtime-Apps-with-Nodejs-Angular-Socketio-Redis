@@ -1,0 +1,44 @@
+   
+<div class="row">
+ <div class="col-sm-8">
+        <div class="panel panel-default" >
+                <div class="panel-heading">
+                  <i class="fa fa-table"></i> Device Stats - Temperature  
+                </div>    
+                <div class="panel-body">                                
+                    <div #chartTemperature></div>
+                </div>                
+        </div>  
+        <div class="panel panel-default" >
+                <div class="panel-heading">
+                  <i class="fa fa-table"></i> Device Stats - Sound 
+                </div>    
+                <div class="panel-body">                                
+                    <div #chartSound></div>
+                </div>                
+        </div>
+ </div>
+ <div class="col-sm-4">
+        <div class="panel panel-default" >
+                <div class="panel-heading">
+                  <i class="fa fa-table"></i> Device Information  
+                </div>    
+                <div class="panel-body">
+                
+                    <table class="table table-bordered text-center">
+                        <thead><tr><th>Device</th><th>Date</th><th>Temp</th><th>Sound</th><th>Humidity</th></tr></thead>
+                        <tr *ngFor="let item of telemetry | async" >                
+                            <td>{{item.deviceId}}</td>
+                            <td>{{item.processed | date:'yyyy-MM-dd HH:mm:ss'}}</td>     
+                            <td>{{item.temperature}} </td>
+                            <td>{{item.sound}}</td>
+                            <td>{{item.humidity}}</td>                  
+                        </tr>
+                    </table>
+                
+                </div>
+                
+        </div>  
+ </div>
+    
+</div>

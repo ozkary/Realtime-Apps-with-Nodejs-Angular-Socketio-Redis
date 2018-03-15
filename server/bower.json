@@ -1,0 +1,7 @@
+{
+  "name": "ozkary-realtime",
+  "version": "0.0.0",
+  "dependencies": {
+    "bootstrap": "bootstrap.css#^2.3.2"
+  }
+}
