@@ -41,7 +41,7 @@ export class TelemetryComponent implements OnInit {
     const elmSnd = this.chartSound.nativeElement;
     
       const temperature = [{
-        x: data.map(dim => dim.processed),
+        x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.temperature),
         mode: 'lines+markers',
         type: 'scatter',
@@ -56,7 +56,7 @@ export class TelemetryComponent implements OnInit {
       }]
 
       const sound = [{
-        x: data.map(dim => dim.processed),
+        x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.sound),
         mode: 'lines+markers',
         type: 'scatter',
@@ -69,7 +69,14 @@ export class TelemetryComponent implements OnInit {
         //,name: ''
         ,showlegend: true
       }]
-     
+
+      function formatDate(dt)
+      {                 
+          let d = (new Date(dt));
+          d.setHours(d.getHours()-(d.getTimezoneOffset()/60));            
+          return d.toISOString();  ;       
+      }
+
       const layout = {
         margin: { t: 0 }
       }
