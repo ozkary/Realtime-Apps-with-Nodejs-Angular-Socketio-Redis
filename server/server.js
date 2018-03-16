@@ -50,18 +50,11 @@ var $api = require('./modules/telemetry-api.js');		    //apis
 
 //STEP 1 - API inproc integration
 var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-//var $repository = require('./data_modules/redisRepository');    //redis repo
 
 //initialize modules
 $headers.init(app);
 $api.init(app, $repository);                             //api routes
 $error.init(app);                                       //enable error handling
-
-//STEP 2 - add realtime socket integration
-//var $socket = require('./modules/socketio.js');		      //socketio module
-//$socket.init(server,$config,$repository);
-
-//STEP 3 - add redis with socket integration
 
 var APP_PORT = $config.PORT;
 var server = app.listen(APP_PORT, function () {
