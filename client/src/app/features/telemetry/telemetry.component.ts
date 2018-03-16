@@ -81,6 +81,7 @@ export class TelemetryComponent implements OnInit {
           return d.toISOString();  ;       
       }
 
+      //register the Plotly class with TypeScript using typings.d.ts
       Plotly.purge(elmTmp);      
       Plotly.plot( elmTmp, temperature, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } )
       
