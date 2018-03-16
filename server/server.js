@@ -71,4 +71,6 @@ var server = app.listen(APP_PORT, function () {
 
   console.log("Node.js Realtime Data App by ozkary.com listening at http://%s:%s", host, port);
   console.log("Open a browser and type the server address including the port");
+  console.log("The angular client runs on localhost:4200");
+  console.log("The socket client and server run on localhost:1337");
 });
