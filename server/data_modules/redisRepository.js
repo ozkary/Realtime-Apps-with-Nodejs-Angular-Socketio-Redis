@@ -116,8 +116,7 @@
             var json = JSON.stringify(item);        
             client.multi()
             .zadd(key,item.id,json)
-            .expire(key,expire)
-            .publish(key,json)
+            .expire(key,expire)           
             .exec(function(err){
     
                 if (err){

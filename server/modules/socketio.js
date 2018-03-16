@@ -49,7 +49,7 @@
                 var item =data;                                
                 provider.add(item).done(function(){
                     console.log('oncreate', data);
-                    //io.sockets.emit(onCreated,data);  
+                    io.sockets.emit(onCreated,data);  //replace with pub/sub
                     ack();//acknowledge the client 
                 },
                 function(err){
@@ -59,18 +59,6 @@
                 }); 
                           
             });
-
-            /**
-             * checks to see if provider support pub/sub messaging
-             */
-            if (provider.subscribe){
-                provider.subscribe.on("message",function(channel,data){
-                    var item = JSON.parse(data);        //message is text
-                    console.log('Provider pub message',channel, item);
-                    io.sockets.emit(onCreated,item); 
-                });
-            }
-           
 
             /**
              * tracks the session disconnect

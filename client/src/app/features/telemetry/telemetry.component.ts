@@ -1,7 +1,7 @@
 import { Component, OnInit ,ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-//app data
+//STEP 2 - replace api service with socket service
 import { Telemetry,TelemetryService} from './telemetry-socket.service';
 
 @Component({

@@ -41,14 +41,7 @@ export class TelemetryService {
 
    public init() {
       
-      // var connectionOptions =  {
-      //     "force new connection" : true,
-      //     "reconnectionAttempts": "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
-      //     "timeout" : 10000,                  //before connect_error and connect_timeout are emitted.
-      //     "transports" : ["websocket"]
-      // };
-
-      this.socket = io(this.baseUrl);
+     this.socket = io(this.baseUrl);
                  
       this.socket.on(this.messages.onConnected, (data) => {
             console.log(this.messages.onConnected,data);

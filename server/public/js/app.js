@@ -72,10 +72,10 @@ $(function(){
 	        $sendButton.trigger('click');//lazy, but works
 	    }
 	})
-
+	
 	function sendMetrics(){
-		var item = {"deviceId":deviceId,"temperature":0,"humidity":0,"sound":0};
-		item.processed= (new Date).toISOString();
+		var item = {"deviceId":deviceId,"temperature":0,"humidity":0,"sound":0};		
+		item.processed= (new Date()).toISOString();
 		item.temperature = getValue(30,40);
 		item.humidity = getValue(60,69);
 		item.sound = getValue(120,125);		

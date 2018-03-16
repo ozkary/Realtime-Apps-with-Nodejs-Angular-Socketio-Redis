@@ -49,8 +49,7 @@ var $error = require('./modules/error-handler.js');		  //error handler
 var $api = require('./modules/telemetry-api.js');		    //apis
 
 //STEP 1 - API inproc integration
-//var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-var $repository = require('./data_modules/redisRepository');    //redis repo
+var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
 
 //initialize modules
 $headers.init(app);
