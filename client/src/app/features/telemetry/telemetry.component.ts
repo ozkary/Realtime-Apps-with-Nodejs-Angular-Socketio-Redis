@@ -2,7 +2,7 @@ import { Component, OnInit ,ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 //app data
-import { Telemetry,TelemetryService} from './telemetry-socket.service';
+import { Telemetry,TelemetryService} from './telemetry.service';
 
 @Component({
   selector: 'app-telemetry',
@@ -28,8 +28,8 @@ export class TelemetryComponent implements OnInit {
   ngOnInit() {
     this.telemetry = this.svcTelemetry.telemetry; //data stream form service
     this.svcTelemetry.init();
-    this.telemetry.subscribe(data => {      
-      this.buildCharts(data)
+    this.telemetry.subscribe(result => {          
+      this.buildCharts(result)
     }); //process the new data;    
   }
 
@@ -41,7 +41,7 @@ export class TelemetryComponent implements OnInit {
     const elmSnd = this.chartSound.nativeElement;
     
       const temperature = [{
-        x: data.map(dim => dim.processed),
+        x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.temperature),
         mode: 'lines+markers',
         type: 'scatter',
@@ -56,7 +56,7 @@ export class TelemetryComponent implements OnInit {
       }]
 
       const sound = [{
-        x: data.map(dim => dim.processed),
+        x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.sound),
         mode: 'lines+markers',
         type: 'scatter',
@@ -72,6 +72,13 @@ export class TelemetryComponent implements OnInit {
      
       const layout = {
         margin: { t: 0 }
+      }
+
+      function formatDate(dt)
+      {                 
+          let d = (new Date(dt));
+          d.setHours(d.getHours()-(d.getTimezoneOffset()/60));            
+          return d.toISOString();  ;       
       }
 
       Plotly.purge(elmTmp);      

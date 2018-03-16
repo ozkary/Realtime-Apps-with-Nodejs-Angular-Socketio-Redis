@@ -38,9 +38,9 @@ app.configure(function(){
 app.use(bodyParser.json());
 
 //js app to act as a device
-app.get("/", function(req, res){
-  res.render('index', {}); 
-});
+// app.get("/", function(req, res){
+//   res.render('index', {}); 
+// });
 
 //include required modules
 var $config = require('./modules/config.js');            //configuration
@@ -49,8 +49,8 @@ var $error = require('./modules/error-handler.js');		  //error handler
 var $api = require('./modules/telemetry-api.js');		    //apis
 
 //STEP 1 - API inproc integration
-//var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-var $repository = require('./data_modules/redisRepository');    //redis repo
+var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
+//var $repository = require('./data_modules/redisRepository');    //redis repo
 
 //initialize modules
 $headers.init(app);
@@ -58,8 +58,8 @@ $api.init(app, $repository);                             //api routes
 $error.init(app);                                       //enable error handling
 
 //STEP 2 - add realtime socket integration
-var $socket = require('./modules/socketio.js');		      //socketio module
-$socket.init(server,$config,$repository);
+//var $socket = require('./modules/socketio.js');		      //socketio module
+//$socket.init(server,$config,$repository);
 
 //STEP 3 - add redis with socket integration
 
@@ -72,5 +72,5 @@ var server = app.listen(APP_PORT, function () {
   console.log("Node.js Realtime Data App by ozkary.com listening at http://%s:%s", host, port);
   console.log("Open a browser and type the server address including the port");
   console.log("The angular client runs on localhost:4200");
-  console.log("The socket client and server run on localhost:1337");
+  
 });
