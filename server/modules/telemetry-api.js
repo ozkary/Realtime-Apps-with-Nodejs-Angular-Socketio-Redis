@@ -38,7 +38,7 @@
             var data = req.body;
             console.log("POST Telemetry",data); 
 
-            provider.add(item).done(function(result){
+            provider.add(data).done(function(result){
                 res.json(result);                 
             },
             function(err){
