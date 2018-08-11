@@ -16,9 +16,9 @@
     module.exports.init = function (app,provider) {
         
         //add the route for login/out handlers    
-        app.get('/api/telemetry', getData)
+        app.get('/api/telemetry', getData)    
         app.post('/api/telemetry', addData)
-    
+        
         //getData
         function getData (req, res){
             console.log("GET Telemetry");
@@ -38,7 +38,7 @@
             var data = req.body;
             console.log("POST Telemetry",data); 
 
-            provider.add(item).done(function(result){
+            provider.add(data).done(function(result){
                 res.json(result);                 
             },
             function(err){
