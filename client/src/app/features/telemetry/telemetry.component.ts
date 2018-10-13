@@ -53,7 +53,7 @@ export class TelemetryComponent implements OnInit {
         }
         //,name: ''
         ,showlegend: true
-      }]
+      }];
 
       const sound = [{
         x: data.map(dim => formatDate(dim.processed)),
@@ -68,7 +68,7 @@ export class TelemetryComponent implements OnInit {
         }
         //,name: ''
         ,showlegend: true
-      }]
+      }];
 
       function formatDate(dt)
       {                 
