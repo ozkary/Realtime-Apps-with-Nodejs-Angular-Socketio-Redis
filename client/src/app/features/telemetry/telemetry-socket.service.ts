@@ -83,7 +83,7 @@ export class TelemetryService {
   private updateStorage(){    
 
     //limit to 20 data points
-    if (this.storage.telemetry.length > 20){
+    while (this.storage.telemetry.length > 20){
       this.storage.telemetry.shift();
     }
 
