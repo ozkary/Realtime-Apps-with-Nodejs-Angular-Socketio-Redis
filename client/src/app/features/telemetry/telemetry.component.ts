@@ -1,5 +1,6 @@
 import { Component, OnInit ,ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Subscription }   from 'rxjs/Subscription';
 
 //app data
 import { Telemetry,TelemetryService} from './telemetry-socket.service';
@@ -13,6 +14,7 @@ export class TelemetryComponent implements OnInit {
   public telemetry: Observable<Telemetry[]>;
   public itemCount : number;
   private svcTelemetry:TelemetryService;
+  private  telemetrySubscription:Subscription;
 
   //chart elements
   @ViewChild('chartTemperature') 
@@ -28,9 +30,15 @@ export class TelemetryComponent implements OnInit {
   ngOnInit() {
     this.telemetry = this.svcTelemetry.telemetry; //data stream form service
     this.svcTelemetry.init();
-    this.telemetry.subscribe(data => {      
+    this.telemetrySubscription = this.telemetry.subscribe(data => {      
       this.buildCharts(data)
     }); //process the new data;    
+  }
+
+  ngOnDestroy(){
+    // prevent memory leak 
+    //on the template the async pipe auto-unsubscribe
+    this.telemetrySubscription.unsubscribe();
   }
 
   /**
