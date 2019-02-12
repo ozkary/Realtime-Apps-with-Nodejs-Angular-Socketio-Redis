@@ -15,18 +15,29 @@
     */
 
     var config = {
-        REDIS:{ host:getEnv('REDISHOST','localhost'), port:getEnv('REDISPORT','6379'), key:getEnv('REDISKEY',''), tablename:'telemetry:data',expire:300},       
+        REDIS:{ 
+            host:getEnv('REDISHOST','localhost'), 
+            port:getEnv('REDISPORT','6379'), 
+            key:getEnv('REDISKEY',''), 
+            tablename:'telemetry:data',
+            expire:300
+        },       
         PORT: getEnv('PORT',1338),
-        SOCKET:{port:getEnv('SOCKETPORT',1337) , message:getEnv('SOCKETMSG','telemetry'), onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate', onerror:'onerror'}        
+        SOCKET:{
+            port:getEnv('SOCKETPORT',1337) ,
+            whitelist:getEnv("WHITELIST","http://localhost:*"),
+            message:getEnv('SOCKETMSG','telemetry'), 
+            onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate', onerror:'onerror'
+        }        
     };
       
-    function getEnv(key, dflt){
+    function getEnv(key, defaultValue){
 
-        if (process.env[key] === undefined && dflt === undefined){
+        if (process.env[key] === undefined && defaultValue === undefined){
              throw new Error('You must create an environment variable for ' + key);
         }
         
-        return process.env[key] || dflt;
+        return process.env[key] || defaultValue;
     };
       
     module.exports = config;

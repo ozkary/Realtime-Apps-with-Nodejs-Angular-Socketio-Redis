@@ -20,7 +20,8 @@
     function init (server,config, provider) {  
                        
         var io = socketio.listen(server);
-        io.set( 'origins', 'http://localhost:* http://localhost:4200' );      //enable CORS support      
+        //io.set( 'origins', 'http://localhost:*' );      //enable CORS support   
+        io.set('origins', config.SOCKET.whitelist);      //enable CORS support     
         var port = config.SOCKET.port;
         var onConnected = config.SOCKET.onconnect;
         var onCreated = config.SOCKET.oncreate;
@@ -64,7 +65,10 @@
              * checks to see if provider support pub/sub messaging
              */
             if (provider.subscribe){
-                provider.subscribe.on("message",function(channel,data){
+                //use below for patter matching mytable:* 
+                //provider.subscribe.psubscribe
+                
+                provider.subscribe.on("message",function onProviderMessage(channel,data){
                     var item = JSON.parse(data);        //message is text
                     console.log('Provider pub message',channel, item);
                     io.sockets.emit(onCreated,item); 
@@ -79,7 +83,7 @@
                 console.log('Socket disconnect');            
             });
         
-        });                         
+        });                          
 
     }
 
