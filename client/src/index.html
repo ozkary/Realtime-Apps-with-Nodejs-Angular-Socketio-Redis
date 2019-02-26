@@ -33,6 +33,13 @@
         </div>
     </header>
   <section class="container-fluid">
+      <script>
+        //0g fix to address ver breaking changes
+        if (window['global'] === undefined) {
+        window['global'] = window;
+        }
+  
+      </script>
       <app-root></app-root>
   </section>
   

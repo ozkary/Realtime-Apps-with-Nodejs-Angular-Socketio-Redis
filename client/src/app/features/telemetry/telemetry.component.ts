@@ -1,6 +1,7 @@
 import { Component, OnInit ,ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription }   from 'rxjs/Subscription';
+import * as Plotly from 'plotly.js';
 
 //app data
 import { Telemetry,TelemetryService} from './telemetry-socket.service';
@@ -48,7 +49,7 @@ export class TelemetryComponent implements OnInit {
     const elmTmp = this.chartTemp.nativeElement;
     const elmSnd = this.chartSound.nativeElement;
     
-      const temperature = [{
+      const temperature : Partial<Plotly.PlotData>[] = [{
         x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.temperature),
         mode: 'lines+markers',
@@ -58,12 +59,11 @@ export class TelemetryComponent implements OnInit {
             color: 'blue',
             size:14,
             symbol: 'circle'
-        }
-        //,name: ''
-        ,showlegend: true
+        }       
+        //,showlegend: true
       }];
 
-      const sound = [{
+      const sound:  Partial<Plotly.PlotData>[]  = [{
         x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.sound),
         mode: 'lines+markers',
@@ -73,9 +73,8 @@ export class TelemetryComponent implements OnInit {
             color: 'blue',
             size:14,
             symbol: 'circle'
-        }
-        //,name: ''
-        ,showlegend: true
+        }       
+        //,showlegend: true
       }];
 
       function formatDate(dt)
@@ -90,7 +89,7 @@ export class TelemetryComponent implements OnInit {
       }
 
       Plotly.purge(elmTmp);      
-      Plotly.plot( elmTmp, temperature, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } )
+      Plotly.plot(elmTmp, temperature, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } )
       
       Plotly.purge(elmSnd);
       Plotly.plot( elmSnd, sound, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } )
