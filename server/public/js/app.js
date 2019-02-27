@@ -1,17 +1,37 @@
-/*************************************
-//
-// ozkary-realtime app
-//
-**************************************/
+'use strict';
+/*!
+    * Copyright 2018 ozkary.com
+    * http://ozkary.com/ by Oscar Garcia
+    * Licensed under the MIT license. Please see LICENSE for more information.
+    *
+    * ozkary.realtime.app
+    * Realtime web clients with socketio and redis    
+    * ver. 1.0.0
+    * 
+    * Repo: 
+    * https://github.com/ozkary/Realtime-Apps-with-Nodejs-Angular-Socketio-Redis
+    *
+    * Created By oscar garcia 
+    *
+    * Update/Fix History
+    *   ogarcia 01/20/2018 initial implementation
+    *
+    */
+// connect to the server on two different ports
+var serverUrl = 'http://127.0.0.1:';
+var socketPort = '1337';
+var apiPort = '1338';
 
-// connect to our socket server
-var socket = io.connect('http://127.0.0.1:1337/');
+var socketUrl= serverUrl+socketPort;
+var apiUrl = serverUrl+socketPort;
+
+var socket = io.connect(socketUrl);
 
 var app = app || {};
 var onConnected = 'onconnect';
 var onCreated = 'oncreate';
 var onAdd = 'onadd';
-var deviceId="0ZA-001";
+var deviceId="0ZA-";
 
 
 // shortcut for document.ready
@@ -73,8 +93,14 @@ $(function(){
 	    }
 	})
 
+	/***
+	 * Sends the telemetry json data.
+	 * Determines what channel is selected api or socket
+	 * 
+	 */
 	function sendMetrics(){
 		var item = {"deviceId":deviceId,"temperature":0,"humidity":0,"sound":0};
+		item.deviceId += getValue(100,150).toString();
 		item.processed= (new Date).toISOString();
 		item.temperature = getValue(30,40);
 		item.humidity = getValue(60,69);
@@ -82,9 +108,22 @@ $(function(){
 		var json = JSON.stringify(item);
 		$blastField.val(json);
 
-		socket.emit(onAdd, item,function(data){
+		var channel= $("input:radio[name=channel]:checked").val();
+
+		if (channel === 'api'){
+			
+			$.post( apiUrl, function( data ) {
+				$blastField.val('');
+			});			
+
+		}else{
+			
+			socket.emit(onAdd, item,function(data){
 				$blastField.val('');
 			});
+			
+		}
+
 	}
 
 	/**

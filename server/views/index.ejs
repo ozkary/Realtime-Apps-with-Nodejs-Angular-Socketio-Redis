@@ -53,6 +53,12 @@
 						<input style="width:350px;" id="blast" type="text" class="form-control" placeholder="Add message" readonly>
 						
 						<span class="input-group-btn">
+							Channel: 
+							<input type="radio" id="apiChannel" name="channel" checked value="api"/>
+							<label for="apiChannel">API</label>
+							<input type="radio" id="socketChannel" name="channel" value="socket"/>
+							<label for="socketChannel">Socket</label>
+							
 							<button id="send" class="btn btn-danger" title="Press to send the item" type="button">Run</button>
 							<button id="add" class="btn btn-success" title="Press to add another item" type="button">Add</button>
 						</span>
@@ -63,9 +69,8 @@
 	</div>
     
     <!-- jQuery --> 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="public/bower_components/jQuery/jquery.min.js"><\/script>')</script>
-
+	<script src="js/jquery.min.js"></script>
+	
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js"></script>
 

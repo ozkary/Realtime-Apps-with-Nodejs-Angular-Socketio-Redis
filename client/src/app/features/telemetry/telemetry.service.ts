@@ -11,7 +11,7 @@ import { Telemetry } from './telemetry.models';
 export { Telemetry } from './telemetry.models';
 
 @Injectable()
-export class TelemetryService_API {
+export class TelemetryService {
   
   public telemetry: Observable<Telemetry[]>;  //the data from the API
   private baseUrl: string;

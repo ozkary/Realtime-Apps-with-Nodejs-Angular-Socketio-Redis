@@ -3,8 +3,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription }   from 'rxjs/Subscription';
 import * as Plotly from 'plotly.js';
 
-//app data
-import { Telemetry,TelemetryService} from './telemetry-socket.service';
+//app data from api or socket
+import { Telemetry,TelemetryService} from './telemetry.service';
+//import { Telemetry,TelemetryService} from './telemetry-socket.service';
 
 @Component({
   selector: 'app-telemetry',
