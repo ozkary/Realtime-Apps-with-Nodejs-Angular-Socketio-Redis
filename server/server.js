@@ -37,13 +37,7 @@ app.configure(function(){
 	app.use(device.capture());
 });
 
-//app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-//js app to act as a device
-app.get("/", function(req, res){
-  res.render('index', {}); 
-});
 
 //include required modules
 var $config = require('./modules/config.js');            //configuration
@@ -51,21 +45,32 @@ var $headers = require('./modules/headers.js');		      //access-control headers
 var $error = require('./modules/error-handler.js');		  //error handler
 var $api = require('./modules/telemetry-api.js');		    //apis
 
-//STEP 1 - API inproc integration
+//repository dependencies
 //var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
+//var $repository = require('./data_modules/sqlRepository');    //sql repo
 //var $repository = require('./data_modules/redisRepository');    //redis repo
-var $repository = require('./data_modules/sqlRepository');    //redis repo
+
+//message broker
+var $repository = require('./modules/message-broker');    //message broker
+var $storage = require('./data_modules/sqlRepository');    //sql repo
+var $cache = require('./data_modules/redisRepository');    //redis repo
+$repository.init($cache,$storage);
 
 //initialize modules
 $headers.init(app);
 $api.init(app, $repository);                             //api routes
 $error.init(app);                                       //enable error handling
 
-//STEP 2 - add realtime socket integration
+//js app to act as a device
+app.get("/", function(req, res){
+  res.render('index', {}); 
+});
+
+//realtime socket integration
 var $socket = require('./modules/socketio.js');		      //socketio module
 $socket.init(server,$config,$repository);
 
-//STEP 3 - add redis with socket integration
+//start the server app
 
 var APP_PORT = $config.PORT;
 var server = app.listen(APP_PORT, function () {

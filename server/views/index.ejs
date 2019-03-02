@@ -7,8 +7,9 @@
         <meta name="description" content="Realtime web application with Nodejs, socket.IO and redis">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/core.css">
-
+		<link rel="stylesheet" href="css/core.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		
         <style>
 
         	input:focus,
@@ -27,47 +28,81 @@
 			    height:100px;
 			    overflow: scroll;
 			}
+			section{ margin-top: 80px;}
 
+			.panel, .input-group{
+				margin-top: 20px;				
+			}
+			.btn-group{
+				margin-left:10px;
+			}
 			p{
-		    	margin:0;
-		    	padding:0;
-		    }
+		    	margin:40;
+		    	padding:20;
+			}
+			#radioBtn .notActive{
+				color: #3276b1;
+				background-color: #fff;
+			}
 
 		</style>
     </head>
     <body>
-
-	<!--[if lt IE 8]>
-		<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-	<![endif]-->
-
-    <div class="container">
-    	<div class="jumbotron">
-        	<h1>ozkary-realtime</h1>
-       		<p>Realtime web application with Nodejs, socket.IO and redis</p>
-       		<div class="row">
-       			<div class="col-md-4 col-sm-6 col-xs-6">
-       				<h3>Telemetry Information<button id="clearAllPosts" type="button" class="btn btn-danger btn-xs pull-right">clear</button></h3>
-       				<div id="allPosts" class="form-control" style="height:350px;"></div>
-				    <div class="input-group">
-						<input style="width:350px;" id="blast" type="text" class="form-control" placeholder="Add message" readonly>
-						
-						<span class="input-group-btn">
-							Channel: 
-							<input type="radio" id="apiChannel" name="channel" checked value="api"/>
-							<label for="apiChannel">API</label>
-							<input type="radio" id="socketChannel" name="channel" value="socket"/>
-							<label for="socketChannel">Socket</label>
+			<header class="navbar navbar-default navbar-fixed-top" >
+					<div class="container">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#" >Device Realtime Web App - ozkary.com</a>
+						</div>
+						<div class="collapse navbar-collapse" id="main-navbar"> 
+							<ul class="nav navbar-nav">
+							 
+							</ul>
 							
-							<button id="send" class="btn btn-danger" title="Press to send the item" type="button">Run</button>
-							<button id="add" class="btn btn-success" title="Press to add another item" type="button">Add</button>
-						</span>
-				    </div><!-- /input-group -->
-       			</div>
-       		</div>
-		</div>
+							<ul class="nav navbar-nav navbar-right">			
+								<li><a title="twitter ozkary" href="//twitter.com/ozkary" target="_blank"><i class="fa fa-twitter fa-fw fa-2x"></i></a></li>
+								<li><a title="google ozkary" href="//plus.google.com/+oscargarcia-ozkary" target="_blank"><i class="fa fa-google-plus fa-fw fa-2x"></i></a></li>
+								<li><a title="linkedin ozkary" href="//www.linkedin.com/in/oscardgarcia/" target="_blank"><i class="fa fa-linkedin fa-fw fa-2x"></i></a></li>
+							
+							</ul>
+						</div>
+					</div>
+				</header>
+
+				<p></p>
+	<section>
+    <div class="container">
+
+			<div class="panel panel-default" >
+					<div class="panel-heading">
+					  <i class="fa fa-table"></i> 
+					  Telemetry Information
+					  <button id="clearAllPosts" type="button" class="btn btn-danger btn-xs pull-right">clear</button>
+					</div>    
+					<div class="panel-body">                                
+					<div id="allPosts" class="form-control" style="height:450px;background-color:black;color:#fff;overflow: auto;size:14x;"></div>
+					<div class="input-group">
+								<input style="width:350px;" id="blast" type="text" class="form-control" placeholder="Add message" readonly>								
+								<div id="radioBtn" class="btn-group">
+										<a class="btn btn-primary btn-sm active" data-toggle="channel" data-title="api">API</a>
+										<a class="btn btn-primary btn-sm notActive" data-toggle="channel" data-title="socket">Socket</a>
+									</div>
+									<input type="hidden" name="channel" id="channel" value="api">																				
+								<span class="input-group-btn">											
+									<button id="send" class="btn btn-danger" title="Press to send the item" type="button">Run</button>
+									<button id="add" class="btn btn-success" title="Press to add another item" type="button">Add</button>
+								</span>
+							</div><!-- /input-group -->
+
+					</div>                
+			</div>  	    	
 	</div>
-    
+</section>
     <!-- jQuery --> 
 	<script src="js/jquery.min.js"></script>
 	

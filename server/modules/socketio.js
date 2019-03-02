@@ -13,14 +13,13 @@
     *   ogarcia 01/20/2018 initial implementation
     *
     */
-    var socketio = require('socket.io');
+    const socketio = require('socket.io');
    
     module.exports.init = init;     
 
     function init (server,config, provider) {  
                        
-        var io = socketio.listen(server);
-        //io.set( 'origins', 'http://localhost:*' );      //enable CORS support   
+        var io = socketio.listen(server);        
         io.set('origins', config.SOCKET.whitelist);      //enable CORS support     
         var port = config.SOCKET.port;
         var onConnected = config.SOCKET.onconnect;
@@ -49,9 +48,9 @@
 
                 var item =data;                                
                 provider.add(item).done(function(){
-                    console.log('oncreate', data);
-                    //io.sockets.emit(onCreated,data);  
+                    console.log('oncreate', data);                     
                     ack();//acknowledge the client 
+                    //io.sockets.emit(onCreated,data); 
                 },
                 function(err){
                     console.log(err);

@@ -23,11 +23,9 @@ var socketPort = '1337';
 var apiPort = '1338';
 
 var socketUrl= serverUrl+socketPort;
-var apiUrl = serverUrl+socketPort;
+var apiUrl = serverUrl+apiPort;
 
-var socket = io.connect(socketUrl);
-
-var app = app || {};
+var socket=null;
 var onConnected = 'onconnect';
 var onCreated = 'oncreate';
 var onAdd = 'onadd';
@@ -40,26 +38,30 @@ $(function(){
 	var $blastField = $('#blast'),
 		$allPostsTextArea = $('#allPosts'),
 		$clearAllPosts = $('#clearAllPosts'),
-		$sendButton = $('#send');
+		$sendButton = $('#send'),
 		$addButton = $('#add');
-		
-	//SOCKET events
-	socket.on(onConnected, function(data){
-		updateData(data,true);				
-	});
 
-	socket.on(onCreated, function(data){
-		updateData(data);		
-	});
+	$('#radioBtn a').on('click', function(){
+		var sel = $(this).data('title');
+		var tog = $(this).data('toggle');
 
-	socket.on("error", function(err) {
-		console.log("error",err);       
-	});
+		//lazy load sockets
+		if (sel === 'socket' && socket === null){
+			socket = initSocket(updateData,showMessage);
+		}
 
-	socket.on("connect", function(){
-		console.log("connect");       
-	});
+		$('#'+tog).prop('value', sel);		
+		$('a[data-toggle="'+tog+'"]').not('[data-title="'+sel+'"]').removeClass('active').addClass('notActive');
+		$('a[data-toggle="'+tog+'"][data-title="'+sel+'"]').removeClass('notActive').addClass('active');
+	})
 
+	$.ajaxSetup({
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
+		}
+	});
+			
 	//UI events
 	$clearAllPosts.click(function(e){
 		$allPostsTextArea.text('');
@@ -108,24 +110,29 @@ $(function(){
 		var json = JSON.stringify(item);
 		$blastField.val(json);
 
-		var channel= $("input:radio[name=channel]:checked").val();
+		var channel= $("#channel").val();
 
 		if (channel === 'api'){
-			
-			$.post( apiUrl, function( data ) {
+			var route = '/api/telemetry';
+			$.post( apiUrl+route,
+				json, 
+				function( data ) {
 				$blastField.val('');
-			});			
+				updateData(data);
+				});			
 
 		}else{
 			
 			socket.emit(onAdd, item,function(data){
 				$blastField.val('');
+				//updateData(data);
 			});
 			
 		}
 
 	}
 
+	
 	/**
 	 * updates the UI with the new data
 	 */
@@ -141,5 +148,32 @@ $(function(){
 	  //generates a random value
 	  function getValue(min, max){
 		return  Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function showMessage(msg){
+		console.log(msg);
+	}
+
+	function initSocket(fnStatus, fnConsole){
+		var socket = io.connect(socketUrl);
+
+		//SOCKET events
+		socket.on(onConnected, function(data){
+			fnStatus(data,true);				
+		});
+
+		socket.on(onCreated, function(data){
+			fnStatus(data);		
+		});
+
+		socket.on("error", function(err) {
+			fnConsole(err);       
+		});
+
+		socket.on("connect", function(){
+			fnConsole("connect");       
+		});
+
+		return socket;
 	}
 });
