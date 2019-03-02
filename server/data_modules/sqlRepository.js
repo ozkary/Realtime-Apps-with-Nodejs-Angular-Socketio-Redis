@@ -43,6 +43,7 @@
                 if (data.length ===0){
                     data =$dbseed.init();
                    await seedTable(repository, data);
+                   resolve(data);
                    await conn.close(); 
                 }else{
                     resolve(data);

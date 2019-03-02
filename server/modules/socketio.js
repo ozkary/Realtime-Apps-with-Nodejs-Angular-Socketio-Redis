@@ -48,9 +48,9 @@
 
                 var item =data;                                
                 provider.add(item).done(function(){
-                    console.log('oncreate', data);                     
-                    ack();//acknowledge the client 
-                    //io.sockets.emit(onCreated,data); 
+                    console.log('oncreate', data); 
+                    io.sockets.emit(onCreated,data);  //replace with pub/sub                    
+                    ack();//acknowledge the client                     
                 },
                 function(err){
                     console.log(err);
