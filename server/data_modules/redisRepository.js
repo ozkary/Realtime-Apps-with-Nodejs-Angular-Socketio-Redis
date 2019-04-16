@@ -25,7 +25,7 @@
     //export functions      
     module.exports.get = getTelemetry;
     module.exports.add=  addTelemetry;
-    module.exports.subscribe= subscribe;
+    module.exports.subscribe=subscribe; //TODO enable subscription
   
     const tableName = $config.REDIS.tablename;  //redis key to use as tablename/key
     subscribe.subscribe(tableName);             //subscribe to the table entries

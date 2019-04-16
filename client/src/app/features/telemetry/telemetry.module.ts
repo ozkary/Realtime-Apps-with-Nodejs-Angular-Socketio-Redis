@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
-//ADD provider on telemetry component
-//import { TelemetryService} from './telemetry.service';
+//TODO provider on telemetry component
+// import { TelemetryService} from './telemetry.service';
 import {TelemetryService} from './telemetry-socket.service';
 import { TelemetryComponent } from './telemetry.component';
 

@@ -39,6 +39,8 @@
                             reject(err);
                         }else{
                             resolve(data);
+                            //add to the cache
+                            addToProvider(cache,data);
                         }                        
                     });
 

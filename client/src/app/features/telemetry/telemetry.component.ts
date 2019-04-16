@@ -4,9 +4,9 @@ import { Subscription }   from 'rxjs/Subscription';
 import * as Plotly from 'plotly.js';
 
 //app data from api or socket
-//ADD provider on telemetry module
-//import { Telemetry,TelemetryService} from './telemetry.service';
-import { Telemetry,TelemetryService} from './telemetry-socket.service';
+//TODO provider on telemetry module
+//import { Telemetry,TelemetryService} from './telemetry.service';          //api service
+ import { Telemetry,TelemetryService} from './telemetry-socket.service'; //socket service
 
 @Component({
   selector: 'app-telemetry',

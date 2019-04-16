@@ -45,12 +45,12 @@ var $headers = require('./modules/headers.js');		      //access-control headers
 var $error = require('./modules/error-handler.js');		  //error handler
 var $api = require('./modules/telemetry-api.js');		    //apis
 
-//repository dependencies
+//TODO repository dependencies
 //var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-//var $repository = require('./data_modules/sqlRepository');    //sql repo
-//var $repository = require('./data_modules/redisRepository');    //redis repo
+// var $repository = require('./data_modules/sqlRepository');    //sql repo
+//  var $repository = require('./data_modules/redisRepository');    //redis repo
 
-//message broker
+//TODO message broker
 var $repository = require('./modules/message-broker');    //message broker
 var $storage = require('./data_modules/sqlRepository');    //sql repo
 var $cache = require('./data_modules/redisRepository');    //redis repo
@@ -59,14 +59,14 @@ $repository.init($cache,$storage);
 //initialize modules
 $headers.init(app);
 $api.init(app, $repository);                             //api routes
-$error.init(app);                                       //enable error handling
+$error.init(app);                                        //enable error handling
 
 //js app to act as a device
 app.get("/", function(req, res){
   res.render('index', {}); 
 });
 
-//realtime socket integration
+//TODO realtime socket integration
 var $socket = require('./modules/socketio.js');		      //socketio module
 $socket.init(server,$config,$repository);
 
