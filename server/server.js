@@ -46,16 +46,22 @@ var $error = require('./modules/error-handler.js');		  //error handler
 var $api = require('./modules/telemetry-api.js');		    //apis
 
 //TODO repository dependencies
+//step 1 use sql server repo
+//step 2 add the realtime socket lib
+//step 3 add redis cache
+//step 4 add message broker
 //var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-// var $repository = require('./data_modules/sqlRepository');    //sql repo
+var $repository = require('./data_modules/sqlRepository');    //sql repo
 //  var $repository = require('./data_modules/redisRepository');    //redis repo
 
 //TODO message broker
+/*
 var $repository = require('./modules/message-broker');    //message broker
 var $storage = require('./data_modules/sqlRepository');    //sql repo
 var $cache = require('./data_modules/redisRepository');    //redis repo
+//init the repos
 $repository.init($cache,$storage);
-
+*/
 //initialize modules
 $headers.init(app);
 $api.init(app, $repository);                             //api routes
@@ -66,9 +72,9 @@ app.get("/", function(req, res){
   res.render('index', {}); 
 });
 
-//TODO realtime socket integration
-var $socket = require('./modules/socketio.js');		      //socketio module
-$socket.init(server,$config,$repository);
+//realtime socket integration
+//var $socket = require('./modules/socketio.js');		      //socketio module
+//$socket.init(server,$config,$repository);
 
 //start the server app
 
@@ -81,6 +87,7 @@ var server = app.listen(APP_PORT, function () {
   console.log("Node.js Realtime Data App by ozkary.com listening at http://%s:%s", host, port);
   console.log("Open a browser and type the server address including the port");
   console.log("The angular client runs on localhost:4200");
-  console.log("The socket client and server run on localhost:1337");
-  console.log("The API server run on localhost:1338");
+  console.log("The socket client and server run on localhost:" + `${$config.SOCKET.port}`);
+  console.log("The API server run on localhost:"+ `${$config.PORT}`);
+  console.log("Redis server run on localhost:"+ `${$config.REDIS.port}`);
 });

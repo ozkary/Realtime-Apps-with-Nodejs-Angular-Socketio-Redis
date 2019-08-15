@@ -14,7 +14,7 @@
     *
     */
 
-   const q = require('q');
+   //const q = require('q');
    module.exports.init = init;
 
    function init(cache, storage) {
@@ -28,7 +28,7 @@
     function getData (){
         console.log("broker get");
               
-        return q.Promise(function(resolve, reject){
+        return new Promise(function(resolve, reject){
                
             getFromProvider(cache,function(data,err){
                
@@ -58,7 +58,7 @@
     function addData (item) {    
         console.log("broker add");  
         
-        return q.Promise(function(resolve, reject){
+        return new Promise(function(resolve, reject){
             
             //SR - must be in storage first
             addToProvider(cache,item, function(data, err){
@@ -87,7 +87,7 @@
         let result= null;
         let error = null;
 
-        provider.get().done(function(data){
+        provider.get().then(function(data){
             result = data;
             callback(result,error);
         },
@@ -102,7 +102,7 @@
         let result= null;
         let error = null;
 
-        provider.add(item).done(function(data){
+        provider.add(item).then(function(data){
             result = data;
             callback(result,error);
         },

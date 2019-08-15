@@ -28,7 +28,7 @@
      */
     function getTelemetry() {
 
-        return q.Promise(async function(resolve, reject, notify){
+        return new Promise(async function(resolve, reject){
            let context = init();
            context.then( async function(conn){
                let repository = conn.getRepository("telemetry");  
@@ -52,7 +52,7 @@
            })
            .catch(function(err){
                 handleError(err);
-              
+                reject(err);              
            });
                       
         });       

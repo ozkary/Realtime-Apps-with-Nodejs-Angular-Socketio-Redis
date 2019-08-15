@@ -12,15 +12,15 @@ export { Telemetry } from './telemetry.models';
 
 @Injectable()
 export class TelemetryService {
-  
+
   public telemetry: Observable<Telemetry[]>;  //the data from the API
   private baseUrl: string;
-  private http : HttpClient;
-  private telemetrySubject: BehaviorSubject<Telemetry[]>; 
+  private http: HttpClient;
+  private telemetrySubject: BehaviorSubject<Telemetry[]>;
 
   //private storage manage by the service
   private storage: {
-    telemetry: Telemetry[];              
+    telemetry: Telemetry[];
   };
 
   constructor(http: HttpClient) {
@@ -33,17 +33,17 @@ export class TelemetryService {
    }
 
    public init() {
-      if (this.storage.telemetry.length === 0){
-        this.http.get(this.baseUrl)            
+      if (this.storage.telemetry.length === 0) {
+        this.http.get(this.baseUrl)
                   .subscribe(data => {
-                  this.storage.telemetry = <Telemetry[]>data;        
-                  let clone = Object.assign({}, this.storage);
-                  this.telemetrySubject.next(clone.telemetry);  //emit the data                
-                }, 
-                  error => console.log(error,'Could not load data.')
-                );     
+                  this.storage.telemetry = <Telemetry[]>data;
+                  const clone = Object.assign({}, this.storage);
+                  this.telemetrySubject.next(clone.telemetry);  //emit the data
+                },
+                  error => console.log(error, 'Could not load data.')
+                );
       }
-            
+
   }
 
 }

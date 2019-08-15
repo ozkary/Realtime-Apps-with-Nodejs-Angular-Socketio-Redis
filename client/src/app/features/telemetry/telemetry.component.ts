@@ -1,12 +1,12 @@
-import { Component, OnInit ,ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit , ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Subscription }   from 'rxjs/Subscription';
+import { Subscription } from 'rxjs/Subscription';
 import * as Plotly from 'plotly.js';
 
 //app data from api or socket
-//TODO provider on telemetry module
-//import { Telemetry,TelemetryService} from './telemetry.service';          //api service
- import { Telemetry,TelemetryService} from './telemetry-socket.service'; //socket service
+//TODO change provider on telemetry.component.ts
+import { Telemetry, TelemetryService} from './telemetry.service';          //api service
+//import { Telemetry, TelemetryService} from './telemetry-socket.service'; //socket service
 
 @Component({
   selector: 'app-telemetry',
@@ -15,31 +15,31 @@ import * as Plotly from 'plotly.js';
 })
 export class TelemetryComponent implements OnInit {
   public telemetry: Observable<Telemetry[]>;
-  public itemCount : number;
-  private svcTelemetry:TelemetryService;
-  private  telemetrySubscription:Subscription;
+  public itemCount: number;
+  private svcTelemetry: TelemetryService;
+  private  telemetrySubscription: Subscription;
 
   //chart elements
-  @ViewChild('chartTemperature') 
+  @ViewChild('chartTemperature')
   private chartTemp: ElementRef; //get an element reference
 
-  @ViewChild('chartSound') 
+  @ViewChild('chartSound')
   private chartSound: ElementRef; //get an element reference
 
-  constructor(svc:TelemetryService) {
+  constructor(svc: TelemetryService) {
     this.svcTelemetry = svc;
    }
 
   ngOnInit() {
     this.telemetry = this.svcTelemetry.telemetry; //data stream form service
     this.svcTelemetry.init();
-    this.telemetrySubscription = this.telemetry.subscribe(data => {      
-      this.buildCharts(data)
-    }); //process the new data;    
+    this.telemetrySubscription = this.telemetry.subscribe(data => {
+      this.buildCharts(data);
+    }); //process the new data;
   }
 
-  ngOnDestroy(){
-    // prevent memory leak 
+  ngOnDestroy() {
+    // prevent memory leak
     //on the template the async pipe auto-unsubscribe
     this.telemetrySubscription.unsubscribe();
   }
@@ -47,11 +47,11 @@ export class TelemetryComponent implements OnInit {
   /**
    * creates the temperature line-graph
    */
-  public buildCharts(data){
+  public buildCharts(data) {
     const elmTmp = this.chartTemp.nativeElement;
     const elmSnd = this.chartSound.nativeElement;
-    
-      const temperature : Partial<Plotly.PlotData>[] = [{
+
+      const temperature: Partial<Plotly.PlotData>[] = [{
         x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.temperature),
         mode: 'lines+markers',
@@ -59,9 +59,9 @@ export class TelemetryComponent implements OnInit {
         text: [],
         marker: {
             color: 'blue',
-            size:14,
+            size: 14,
             symbol: 'circle'
-        }       
+        }
         //,showlegend: true
       }];
 
@@ -73,28 +73,27 @@ export class TelemetryComponent implements OnInit {
         text: [],
         marker: {
             color: 'blue',
-            size:14,
+            size: 14,
             symbol: 'circle'
-        }       
+        }
         //,showlegend: true
       }];
 
-      function formatDate(dt)
-      {                 
-          let d = (new Date(dt));
-          d.setHours(d.getHours()-(d.getTimezoneOffset()/60));            
-          return d.toISOString();  ;       
+      function formatDate(dt) {
+          const d = (new Date(dt));
+          d.setHours(d.getHours() - (d.getTimezoneOffset() / 60));
+          return d.toISOString();         
       }
 
       const layout = {
         margin: { t: 0 }
-      }
+      };
 
-      Plotly.purge(elmTmp);      
-      Plotly.plot(elmTmp, temperature, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } )
-      
+      Plotly.purge(elmTmp);
+      Plotly.plot(elmTmp, temperature, layout, { displayModeBar: false, displaylogo: false, scrollZoom: true } );
+
       Plotly.purge(elmSnd);
-      Plotly.plot( elmSnd, sound, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } )
+      Plotly.plot( elmSnd, sound, layout, { displayModeBar: false, displaylogo: false, scrollZoom: true } );
   }
 
 

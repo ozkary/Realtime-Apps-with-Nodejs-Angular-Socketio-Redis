@@ -32,7 +32,7 @@
         io.sockets.on('connection', function (socket) { 
             console.log('Socket is ready', socket.id);
             var data = null;
-            provider.get().done(function(data){
+            provider.get().then(function(data){
                 io.sockets.emit(onConnected, data);       //send full load
             },
             function(err){
@@ -47,7 +47,7 @@
             socket.on(onAdd, function(data, ack){  
 
                 var item =data;                                
-                provider.add(item).done(function(){
+                provider.add(item).then(function(){
                     console.log('oncreate', data); 
                     io.sockets.emit(onCreated,data);  //replace with pub/sub                    
                     ack();//acknowledge the client                     

@@ -20,7 +20,7 @@ SELECT [telemetryId]
       ,[sound]
       ,[processed]
       ,[created]
-  FROM [dbo].[Telemetry] 
+  FROM [dbo].[Telemetry] (nolock)
   WHERE 
   processed > dateadd(HOUR,-2, getdate())
   order by telemetryId desc
