@@ -13,7 +13,7 @@
     *   ogarcia 01/20/2018 initial implementation
     *
 */
-    const q = require('q')
+    //const q = require('q')
     const orm =  require("typeorm");
 
     const $dbseed = require('./db-seeding.js');
@@ -69,7 +69,7 @@
             item.processed = ts.toISOString();
         }
        
-        return q.Promise(async function(resolve, reject, notify){
+        return new Promise(async function(resolve, reject){
 
            let context = init();
            context.then(async function(conn){
@@ -82,8 +82,9 @@
                 conn.close();
 
            })
-           .catch(function(err){
+           .catch(function(err){               
                 handleError(err);
+                reject(err);
                 
            });
                         

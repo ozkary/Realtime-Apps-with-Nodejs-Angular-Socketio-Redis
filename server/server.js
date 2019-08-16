@@ -51,17 +51,22 @@ var $api = require('./modules/telemetry-api.js');		    //apis
 //step 3 add redis cache
 //step 4 add message broker
 //var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-var $repository = require('./data_modules/sqlRepository');    //sql repo
-//  var $repository = require('./data_modules/redisRepository');    //redis repo
+// var $repository = require('./data_modules/sqlRepository');    //sql repo
+//var $repository = require('./data_modules/redisRepository');    //redis repo
+
 
 //TODO message broker
-/*
 var $repository = require('./modules/message-broker');    //message broker
 var $storage = require('./data_modules/sqlRepository');    //sql repo
 var $cache = require('./data_modules/redisRepository');    //redis repo
 //init the repos
 $repository.init($cache,$storage);
-*/
+
+
+//realtime socket integration
+const $socket = require('./modules/socketio.js');		      //socketio module
+$socket.init(server,$config,$repository);
+
 //initialize modules
 $headers.init(app);
 $api.init(app, $repository);                             //api routes
@@ -71,10 +76,6 @@ $error.init(app);                                        //enable error handling
 app.get("/", function(req, res){
   res.render('index', {}); 
 });
-
-//realtime socket integration
-//var $socket = require('./modules/socketio.js');		      //socketio module
-//$socket.init(server,$config,$repository);
 
 //start the server app
 

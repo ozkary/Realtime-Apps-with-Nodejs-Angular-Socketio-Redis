@@ -5,8 +5,8 @@ import * as Plotly from 'plotly.js';
 
 //app data from api or socket
 //TODO change provider on telemetry.component.ts
-import { Telemetry, TelemetryService} from './telemetry.service';          //api service
-//import { Telemetry, TelemetryService} from './telemetry-socket.service'; //socket service
+//import { Telemetry, TelemetryService} from './telemetry.service';          //api service
+import { Telemetry, TelemetryService} from './telemetry-socket.service'; //socket service
 
 @Component({
   selector: 'app-telemetry',
@@ -18,6 +18,8 @@ export class TelemetryComponent implements OnInit {
   public itemCount: number;
   private svcTelemetry: TelemetryService;
   private  telemetrySubscription: Subscription;
+  private plotTemperature: Plotly.PlotlyHTMLElement;
+  private plotSound: Plotly.PlotlyHTMLElement;
 
   //chart elements
   @ViewChild('chartTemperature')
@@ -34,7 +36,10 @@ export class TelemetryComponent implements OnInit {
     this.telemetry = this.svcTelemetry.telemetry; //data stream form service
     this.svcTelemetry.init();
     this.telemetrySubscription = this.telemetry.subscribe(data => {
-      this.buildCharts(data);
+      if (data && data.length > 0) {
+        this.buildCharts(data);
+      }
+
     }); //process the new data;
   }
 
@@ -47,54 +52,60 @@ export class TelemetryComponent implements OnInit {
   /**
    * creates the temperature line-graph
    */
-  public buildCharts(data) {
-    const elmTmp = this.chartTemp.nativeElement;
-    const elmSnd = this.chartSound.nativeElement;
+  public async buildCharts(data: Telemetry[]) {
+    const elmTmpChart = this.chartTemp.nativeElement;
+    const elmSndChart = this.chartSound.nativeElement;
+
+      const traceProps: any = {
+            mode: 'lines+markers',
+            type: 'scatter',
+            text: [],
+            marker: {
+                color: 'blue',
+                size: 14,
+                symbol: 'circle'
+            }
+            //,showlegend: true
+      };
 
       const temperature: Partial<Plotly.PlotData>[] = [{
         x: data.map(dim => formatDate(dim.processed)),
-        y: data.map(dim => dim.temperature),
-        mode: 'lines+markers',
-        type: 'scatter',
-        text: [],
-        marker: {
-            color: 'blue',
-            size: 14,
-            symbol: 'circle'
-        }
-        //,showlegend: true
+        y: data.map(dim => dim.temperature)
       }];
 
       const sound:  Partial<Plotly.PlotData>[]  = [{
         x: data.map(dim => formatDate(dim.processed)),
         y: data.map(dim => dim.sound),
-        mode: 'lines+markers',
-        type: 'scatter',
-        text: [],
-        marker: {
-            color: 'blue',
-            size: 14,
-            symbol: 'circle'
-        }
-        //,showlegend: true
       }];
 
       function formatDate(dt) {
           const d = (new Date(dt));
           d.setHours(d.getHours() - (d.getTimezoneOffset() / 60));
-          return d.toISOString();         
+          return d.toISOString();
       }
 
-      const layout = {
+      const layout: any = {
         margin: { t: 0 }
       };
 
-      Plotly.purge(elmTmp);
-      Plotly.plot(elmTmp, temperature, layout, { displayModeBar: false, displaylogo: false, scrollZoom: true } );
+     Plotly.purge(elmTmpChart);
+     // if (!this.plotTemperature) {
+        Object.assign(temperature, traceProps);
+        this.plotTemperature = await Plotly.plot(elmTmpChart, temperature, layout,
+                        { displayModeBar: false, displaylogo: false, scrollZoom: true } );
+    //  } else {        
+    //    Plotly.extendTraces(elmTmpChart, temperature, [0]);
+        //Plotly.extendTraces(p, {text: [temperature.text], y: [[ newY ]], x: [[ newX ]]}, [0])
+    //  }
 
-      Plotly.purge(elmSnd);
-      Plotly.plot( elmSnd, sound, layout, { displayModeBar: false, displaylogo: false, scrollZoom: true } );
+      Plotly.purge(elmSndChart);
+     // if (!this.plotSound) {
+        Object.assign(sound, traceProps);
+        this.plotSound = await Plotly.plot( elmSndChart, sound, layout,
+                            { displayModeBar: false, displaylogo: false, scrollZoom: true } );
+     // } else {
+     //   Plotly.extendTraces(elmSndChart, sound, [0]);
+     // }
   }
-
 
 }
