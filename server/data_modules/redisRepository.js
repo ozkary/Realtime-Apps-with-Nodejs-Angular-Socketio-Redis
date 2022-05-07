@@ -13,8 +13,7 @@
     *   ogarcia 01/20/2018 initial implementation
     *
 */    
-    var redis = require('redis');
-    var q = require('q')
+    var redis = require('redis');    
     var $config = require('../modules/config');
     var $dbseed = require('./db-seeding.js');
 
@@ -36,7 +35,7 @@
     function getTelemetry(){
                
         //async operation - return a promise
-        return q.Promise(async function(resolve, reject, notify){
+        return new Promise(async function(resolve, reject){
 
             let ts = (new Date);    
             let from  =  ts.setHours(ts.getHours()-1);      //basic date range query
@@ -116,7 +115,7 @@
     function insertItem(key,item){
         var expire = $config.REDIS.expire;
 
-        return q.Promise( async function(resolve, reject, notify){
+        return new Promise( async function(resolve, reject){
             var json = JSON.stringify(item);        
             await client.multi()
             .zadd(key,item.id,json)

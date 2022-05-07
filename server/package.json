@@ -47,7 +47,7 @@
       "node": ">=0.8.0"
    },
    "scripts": {
-      "start": "ts-node src/index.ts"
+      "start": "node server.js"
    },
    "license": "ISC"
 }

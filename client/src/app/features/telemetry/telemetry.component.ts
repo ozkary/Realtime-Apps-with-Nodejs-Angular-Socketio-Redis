@@ -6,7 +6,7 @@ import * as Plotly from 'plotly.js';
 //app data from api or socket
 //TODO change provider on telemetry.component.ts
 //import { Telemetry, TelemetryService} from './telemetry.service';          //api service
-import { Telemetry, TelemetryService} from './telemetry-socket.service'; //socket service
+import { Telemetry, TelemetryService} from './telemetry.factory'; //socket service
 
 @Component({
   selector: 'app-telemetry',

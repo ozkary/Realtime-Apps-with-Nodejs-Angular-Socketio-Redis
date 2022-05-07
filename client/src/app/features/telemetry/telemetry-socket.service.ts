@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 //app imports
-import {environment} from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 //import/export the models
 import { Telemetry } from './telemetry.models';

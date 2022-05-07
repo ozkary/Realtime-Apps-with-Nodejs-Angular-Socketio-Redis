@@ -14,9 +14,12 @@
     *
     */
 
-   //const q = require('q');
+   // exports
    module.exports.init = init;
-
+      
+   /**
+    * initialize the provider with cache and storage    
+    */
    function init(cache, storage) {
    
     module.exports.get = getData;

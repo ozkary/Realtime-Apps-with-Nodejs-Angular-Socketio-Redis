@@ -96,7 +96,7 @@
      function init(){
         var context =  orm.createConnection(
             {"type": "mssql",
-        "host": "localhost\\sqlexpress",
+        "host": "localhost",
         "port": 1433,
         "username": "appuser",
         "password": "testing",

@@ -19,7 +19,7 @@
     */
 /*
  * require modules
- * use npm init to download all the dependencies
+ * use npm isntall from the server folder to download all the dependencies
  */
 
 var express = require('express');
@@ -40,37 +40,30 @@ app.configure(function(){
 app.use(bodyParser.json());
 
 //include required modules
-var $config = require('./modules/config.js');            //configuration
-var $headers = require('./modules/headers.js');		      //access-control headers
-var $error = require('./modules/error-handler.js');		  //error handler
-var $api = require('./modules/telemetry-api.js');		    //apis
+var config = require('./modules/config.js');            //configuration
+var headers = require('./modules/headers.js');		      //access-control headers
+var error = require('./modules/error-handler.js');		  //error handler
+var api = require('./modules/telemetry-api.js');		    //apis
 
-//TODO repository dependencies
+//TODO repository strategy
 //step 1 use sql server repo
 //step 2 add the realtime socket lib
 //step 3 add redis cache
 //step 4 add message broker
-//var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-// var $repository = require('./data_modules/sqlRepository');    //sql repo
-//var $repository = require('./data_modules/redisRepository');    //redis repo
-
-
-//TODO message broker
-var $repository = require('./modules/message-broker');    //message broker
-var $storage = require('./data_modules/sqlRepository');    //sql repo
-var $cache = require('./data_modules/redisRepository');    //redis repo
-//init the repos
-$repository.init($cache,$storage);
-
+const strategy = require('./data_modules/strategy');
+const repository = strategy.broker;
+// initialize the repo
+// repository.init(); 
+repository.init(strategy.redis, strategy.sql); // add params for the broker
 
 //realtime socket integration
-const $socket = require('./modules/socketio.js');		      //socketio module
-$socket.init(server,$config,$repository);
+const socket = require('./modules/socketio.js');		      //socketio module
+socket.init(server, config, repository);
 
 //initialize modules
-$headers.init(app);
-$api.init(app, $repository);                             //api routes
-$error.init(app);                                        //enable error handling
+headers.init(app);
+api.init(app, repository);                             //api routes
+error.init(app);                                        //enable error handling
 
 //js app to act as a device
 app.get("/", function(req, res){
@@ -79,16 +72,17 @@ app.get("/", function(req, res){
 
 //start the server app
 
-var APP_PORT = $config.PORT;
-var server = app.listen(APP_PORT, function () {
+const APP_PORT = config.PORT;
+app.listen(APP_PORT, function () {
   
-  var host = server.address().address;
-  var port = server.address().port;
+  const host = server.address().address;
+  const port = server.address().port;
 
   console.log("Node.js Realtime Data App by ozkary.com listening at http://%s:%s", host, port);
   console.log("Open a browser and type the server address including the port");
   console.log("The angular client runs on localhost:4200");
-  console.log("The socket client and server run on localhost:" + `${$config.SOCKET.port}`);
-  console.log("The API server run on localhost:"+ `${$config.PORT}`);
-  console.log("Redis server run on localhost:"+ `${$config.REDIS.port}`);
+  console.log("The socket client and server run on localhost:" + `${config.SOCKET.port}`);
+  console.log("The API server run on localhost:"+ `${config.PORT}`);
+  console.log("The test app runs on localhost:"+ `${config.PORT}`);
+  console.log("Redis server run on localhost:"+ `${config.REDIS.port}`);
 });

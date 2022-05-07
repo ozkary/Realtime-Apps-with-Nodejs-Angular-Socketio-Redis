@@ -64,3 +64,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+// resolve this error
+// nd: Error: Can't resolve 'fs' or 'Path' 
+ // (window as any).global = window;
+ // declare var fs: any;
