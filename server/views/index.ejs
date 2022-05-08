@@ -4,14 +4,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>ozkary-realtime</title>
-        <meta name="description" content="Realtime web application with Nodejs, socket.IO and redis">
+        <meta name="description" content="Real time web application with Nodejs, socket.IO and redis">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<link rel="stylesheet" href="css/core.css">
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 		
-        <style>
-
+        <style>			
         	input:focus,
 			select:focus,
 			textarea:focus,
@@ -29,7 +28,7 @@
 			    overflow: scroll;
 			}
 			section{ margin-top: 80px;}
-
+			.main {flex: 1 0 auto;}
 			.panel, .input-group{
 				margin-top: 20px;				
 			}
@@ -44,10 +43,24 @@
 				color: #3276b1;
 				background-color: #fff;
 			}
-
+			.footer {
+				padding-top: 3rem;
+				padding-bottom: 0.5rem;
+				background-color: #444444;
+				bottom: 0;			
+				position: fixed;
+				width: 100%;
+				color: #fff;			
+				text-align: center;	
+			}
+			ul, li {list-style-type: none;}
+			li {padding-left: 2em; text-indent: -2em; padding-bottom: 5px;}
+			.footer li {font-size: 2.25rem;}
+			.footer a {color: #fff;}
 		</style>
     </head>
-    <body>
+    <body class="d-flex flex-column h-100">
+	<div class="main">
 			<header class="navbar navbar-default navbar-fixed-top" >
 					<div class="container">
 						<div class="navbar-header">
@@ -57,7 +70,7 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
-							<a class="navbar-brand" href="#" >Device Realtime Web App - ozkary.com</a>
+							<a class="navbar-brand" href="#" >Device Real Time Web App - ozkary.com</a>
 						</div>
 						<div class="collapse navbar-collapse" id="main-navbar"> 
 							<ul class="nav navbar-nav">
@@ -65,8 +78,7 @@
 							</ul>
 							
 							<ul class="nav navbar-nav navbar-right">			
-								<li><a title="twitter ozkary" href="//twitter.com/ozkary" target="_blank"><i class="fa fa-twitter fa-fw fa-2x"></i></a></li>
-								<li><a title="google ozkary" href="//plus.google.com/+oscargarcia-ozkary" target="_blank"><i class="fa fa-google-plus fa-fw fa-2x"></i></a></li>
+								<li><a title="twitter ozkary" href="//twitter.com/ozkary" target="_blank"><i class="fa fa-twitter fa-fw fa-2x"></i></a></li>								
 								<li><a title="linkedin ozkary" href="//www.linkedin.com/in/oscardgarcia/" target="_blank"><i class="fa fa-linkedin fa-fw fa-2x"></i></a></li>
 							
 							</ul>
@@ -76,33 +88,51 @@
 
 				<p></p>
 	<section>
-    <div class="container">
+		<div class="container">
 
-			<div class="panel panel-default" >
-					<div class="panel-heading">
-					  <i class="fa fa-table"></i> 
-					  Telemetry Information
-					  <button id="clearAllPosts" type="button" class="btn btn-danger btn-xs pull-right">clear</button>
-					</div>    
-					<div class="panel-body">                                
-					<div id="allPosts" class="form-control" style="height:450px;background-color:black;color:#fff;overflow: auto;size:14x;"></div>
-					<div class="input-group">
-								<input style="width:350px;" id="blast" type="text" class="form-control" placeholder="Add message" readonly>								
-								<div id="radioBtn" class="btn-group">
-										<a class="btn btn-primary btn-sm active" data-toggle="channel" data-title="api">API</a>
-										<a class="btn btn-primary btn-sm notActive" data-toggle="channel" data-title="socket">Socket</a>
-									</div>
-									<input type="hidden" name="channel" id="channel" value="api">																				
-								<span class="input-group-btn">											
-									<button id="send" class="btn btn-danger" title="Press to send the item" type="button" disabled>Run Realtime</button>
-									<button id="add" class="btn btn-success" title="Press to add another item" type="button">Add Message</button>
-								</span>
-							</div><!-- /input-group -->
+				<div class="panel panel-default" >
+						<div class="panel-heading">
+						<i class="fa fa-table"></i> 
+						Telemetry Information
+						<button id="clearAllPosts" type="button" class="btn btn-danger btn-xs pull-right">clear</button>
+						</div>    
+						<div class="panel-body">                                
+						<div id="allPosts" class="form-control" style="height:450px;background-color:black;color:#fff;overflow: auto;size:14x;"></div>
+						<div class="input-group">
+									<input style="width:350px;" id="blast" type="text" class="form-control" placeholder="Add message" readonly>								
+									<div id="radioBtn" class="btn-group">
+											<a class="btn btn-primary btn-sm active" data-toggle="channel" data-title="api">API</a>
+											<a class="btn btn-primary btn-sm notActive" data-toggle="channel" data-title="socket">Socket</a>
+										</div>
+										<input type="hidden" name="channel" id="channel" value="api">																				
+									<span class="input-group-btn">											
+										<button id="send" class="btn btn-danger" title="Press to send the item" type="button" disabled>Run Real Time</button>
+										<button id="add" class="btn btn-success" title="Press to add another item" type="button">Add Message</button>
+									</span>
+								</div><!-- /input-group -->
 
-					</div>                
-			</div>  	    	
-	</div>
-</section>
+						</div>                
+				</div>  	    	
+		</div>
+	</section>
+	</div>	
+	<footer class="footer" >		  
+		<div class="row">
+		<div class="col-md-4">			
+			<h4>Real Time Integration</h4>
+			<p class="p-small">
+				With this project, we take a look at moving away from traditional API polling integration into a real-time integration in which the client app uses a persistent connection to the server for bidirectional communication and live data streaming. We also talk about the scalability challenges of the application and integration with Redis as our in in-memory data solution.				
+			</p>			
+		</div>					
+		<div class="col-md-8">	
+			<ul class="">				
+				<li><i class="fa fa-twitter fa-fw fa-2x"></i> @ozkary</li>
+				<li><a href="https://www.ozkary.com">https://www.ozkary.com</a></li>
+			</ul>		
+			
+		</div>
+		</div>
+	</footer>
     <!-- jQuery --> 
 	<script src="js/jquery.min.js"></script>
 	

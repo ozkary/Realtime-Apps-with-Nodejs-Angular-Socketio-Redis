@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 //TODO change provider on telemetry.component.ts
 import { TelemetryService } from './telemetry.factory';
-// import {TelemetryService} from './telemetry-socket.service';
 import { TelemetryComponent } from './telemetry.component';
 
 @NgModule({
