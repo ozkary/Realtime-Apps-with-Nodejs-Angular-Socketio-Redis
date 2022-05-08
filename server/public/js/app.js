@@ -44,15 +44,25 @@ $(function(){
 	$('#radioBtn a').on('click', function(){
 		var sel = $(this).data('title');
 		var tog = $(this).data('toggle');
-
-		//lazy load sockets
-		if (sel === 'socket' && socket === null){
-			socket = initSocket(updateData,showMessage);
-		}
-
+		
 		$('#'+tog).prop('value', sel);		
 		$('a[data-toggle="'+tog+'"]').not('[data-title="'+sel+'"]').removeClass('active').addClass('notActive');
 		$('a[data-toggle="'+tog+'"][data-title="'+sel+'"]').removeClass('notActive').addClass('active');
+		
+		let useSocket = sel === 'socket';
+		$sendButton.prop('disabled', useSocket);
+
+		if (useSocket){
+			$sendButton.removeAttr('disabled');
+			$addButton.attr('disabled','true');
+		}else{
+			$addButton.removeAttr('disabled');
+			$sendButton.attr('disabled','true');
+		}
+		//lazy load sockets
+		if (useSocket && socket === null){												
+			socket = initSocket(updateData,showMessage);			
+		}
 	})
 
 	$.ajaxSetup({
@@ -77,7 +87,7 @@ $(function(){
 		if (interval){
 			clearInterval(interval);
 			interval =null;
-			$sendButton.html('Run');
+			$sendButton.html('Run Realtime');
 		}else{
 			$sendButton.html('Stop');
 			sendMetrics();
@@ -91,7 +101,7 @@ $(function(){
 
 	$blastField.keydown(function (e){
 	    if(e.keyCode == 13){
-	        $sendButton.trigger('click');//lazy, but works
+	        $sendButton.trigger('click');
 	    }
 	})
 
@@ -125,7 +135,7 @@ $(function(){
 			
 			socket.emit(onAdd, item,function(data){
 				$blastField.val('');
-				//updateData(data);
+				updateData(data);
 			});
 			
 		}

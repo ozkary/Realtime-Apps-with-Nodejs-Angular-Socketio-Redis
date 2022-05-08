@@ -97,7 +97,7 @@
         var context =  orm.createConnection(
             {"type": "mssql",
         "host": "localhost",
-        "port": 1433,
+        "port": 1434,
         "username": "appuser",
         "password": "testing",
         "database": "Dataimport",
