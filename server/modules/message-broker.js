@@ -63,7 +63,7 @@
         
         return new Promise(function(resolve, reject){
             
-            //SR - must be in storage first
+            // add to cache or storaged based on requirements
             addToProvider(cache,item, function(data, err){
                                 
                 if (err){

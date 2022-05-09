@@ -7,7 +7,7 @@
 //TODO factory to change between API or socket service
 
 // API service
-//export { TelemetryService} from './telemetry.service';
+// export { TelemetryService} from './telemetry.service';
 
 // socket service
 export { TelemetryService } from './telemetry-socket.service';

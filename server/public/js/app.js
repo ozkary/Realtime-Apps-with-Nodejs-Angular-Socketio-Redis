@@ -60,8 +60,10 @@ $(function(){
 			$sendButton.attr('disabled','true');
 		}
 		//lazy load sockets
-		if (useSocket && socket === null){												
+		if (useSocket && socket === null) {												
 			socket = initSocket(updateData,showMessage);			
+		} else if (!useSocket && socket) {
+			closeSocket();
 		}
 	})
 
@@ -93,7 +95,7 @@ $(function(){
 			sendMetrics();
 			interval = setInterval(function(){
 				sendMetrics();
-			},2000);
+			},2500);
 	
 		}
 		
@@ -111,19 +113,19 @@ $(function(){
 	 * 
 	 */
 	function sendMetrics(){
-		var item = {"deviceId":deviceId,"temperature":0,"humidity":0,"sound":0};
+		const item = {"deviceId":deviceId,"temperature":0,"humidity":0,"sound":0};
 		item.deviceId += getValue(100,150).toString();
 		item.processed= (new Date).toISOString();
 		item.temperature = getValue(30,40);
 		item.humidity = getValue(60,69);
 		item.sound = getValue(120,125);		
-		var json = JSON.stringify(item);
+		const json = JSON.stringify(item);
 		$blastField.val(json);
 
 		var channel= $("#channel").val();
 
 		if (channel === 'api'){
-			var route = '/api/telemetry';
+			const route = '/api/telemetry';
 			$.post( apiUrl+route,
 				json, 
 				function( data ) {
@@ -131,8 +133,7 @@ $(function(){
 				updateData(data);
 				});			
 
-		}else{
-			
+		}else{			
 			socket.emit(onAdd, item,function(data){
 				$blastField.val('');
 				updateData(data);
@@ -146,13 +147,18 @@ $(function(){
 	/**
 	 * updates the UI with the new data
 	 */
-	function updateData(data,reset){
-		var copy = $allPostsTextArea.html();
-		if (reset){
-			copy= '';
-		}
-		$allPostsTextArea.html('<p>' + copy + JSON.stringify(data) + "</p>");
-		$allPostsTextArea.scrollTop($allPostsTextArea[0].scrollHeight - $allPostsTextArea.height());
+	function updateData(data,reset=false){
+		
+		if (typeof(data) !== "undefined"){
+			let copy = $allPostsTextArea.html();
+			
+			if (reset){
+				copy= '';
+			}
+
+			$allPostsTextArea.html('<p>' + copy + JSON.stringify(data) + "</p>");
+			$allPostsTextArea.scrollTop($allPostsTextArea[0].scrollHeight - $allPostsTextArea.height());
+		}		
 	}
 	
 	  //generates a random value
@@ -165,7 +171,12 @@ $(function(){
 	}
 
 	function initSocket(fnStatus, fnConsole){
-		var socket = io.connect(socketUrl);
+
+		if (typeof io === "undefined"){
+			updateData('Socket is not available',false);
+			return;
+		}
+		const socket = io.connect(socketUrl);
 
 		//SOCKET events
 		socket.on(onConnected, function(data){
@@ -173,7 +184,9 @@ $(function(){
 		});
 
 		socket.on(onCreated, function(data){
-			fnStatus(data);		
+			if (data){
+				fnStatus(data);
+			}			
 		});
 
 		socket.on("error", function(err) {
@@ -185,5 +198,17 @@ $(function(){
 		});
 
 		return socket;
+	}
+
+	/**
+	 * disconect the socket
+	 */
+	function closeSocket(){
+
+		if (typeof socket !== "undefined" && socket){			
+			socket.removeAllListeners();
+			socket.disconnect(true);		
+			socket = null;	
+		}
 	}
 });

@@ -52,8 +52,7 @@ var api = require('./modules/telemetry-api.js');		    //apis
 //step 4 add message broker
 const strategy = require('./data_modules/strategy');
 const repository = strategy.broker;
-// initialize the repo
-// repository.init(); 
+// initialize the repo for the broker only
 repository.init(strategy.redis, strategy.sql); // add params for the broker
 
 //realtime socket integration
@@ -83,6 +82,6 @@ app.listen(APP_PORT, function () {
   console.log("The angular client runs on localhost:4200");
   console.log("The socket client and server run on localhost:" + `${config.SOCKET.port}`);
   console.log("The API server run on localhost:"+ `${config.PORT}`);
-  console.log("The test app runs on localhost:"+ `${config.PORT}`);
+  console.log("The test app runs on localhost:"+ `${config.SOCKET.port}`);
   console.log("Redis server run on localhost:"+ `${config.REDIS.port}`);
 });
