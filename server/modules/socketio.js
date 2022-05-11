@@ -13,27 +13,27 @@
     *   ogarcia 01/20/2018 initial implementation
     *
     */
-    var socketio = require('socket.io');
+    const socketio = require('socket.io');
    
     module.exports.init = init;     
 
     function init (server,config, provider) {  
                        
-        var io = socketio.listen(server);
-        //io.set( 'origins', 'http://localhost:*' );      //enable CORS support   
+        const io = socketio.listen(server);        
         io.set('origins', config.SOCKET.whitelist);      //enable CORS support     
-        var port = config.SOCKET.port;
-        var onConnected = config.SOCKET.onconnect;
-        var onCreated = config.SOCKET.oncreate;
-        var onAdd = config.SOCKET.onadd;
-        var onError = config.SOCKET.onerror;
+        const port = config.SOCKET.port;
+        const onConnected = config.SOCKET.onconnect;
+        const onCreated = config.SOCKET.oncreate;
+        const onAdd = config.SOCKET.onadd;
+        const onError = config.SOCKET.onerror;
+        var hasSubscribed = false;
         
         server.listen(port);              
        
         io.sockets.on('connection', function (socket) { 
             console.log('Socket is ready', socket.id);
             var data = null;
-            provider.get().done(function(data){
+            provider.get().then(function(data){
                 io.sockets.emit(onConnected, data);       //send full load
             },
             function(err){
@@ -48,10 +48,12 @@
             socket.on(onAdd, function(data, ack){  
 
                 var item =data;                                
-                provider.add(item).done(function(){
-                    console.log('oncreate', data);
-                    //io.sockets.emit(onCreated,data);  
-                    ack();//acknowledge the client 
+                provider.add(item).then(function(){                    
+                    if ( typeof provider.subscribe === 'undefined' || !provider.subscribe){                        
+                        console.log('oncreate', data); 
+                        io.sockets.emit(onCreated,data);  //replace with pub/sub
+                    }                    
+                    ack();//acknowledge the client                     
                 },
                 function(err){
                     console.log(err);
@@ -64,14 +66,17 @@
             /**
              * checks to see if provider support pub/sub messaging
              */
-            if (provider.subscribe){
+            if (provider.subscribe && !hasSubscribed){
                 //use below for patter matching mytable:* 
                 //provider.subscribe.psubscribe
+                hasSubscribed = true;
                 
                 provider.subscribe.on("message",function onProviderMessage(channel,data){
                     var item = JSON.parse(data);        //message is text
                     console.log('Provider pub message',channel, item);
-                    io.sockets.emit(onCreated,item); 
+                    if (item){
+                        io.sockets.emit(onCreated,item); 
+                    }                    
                 });
             }
            

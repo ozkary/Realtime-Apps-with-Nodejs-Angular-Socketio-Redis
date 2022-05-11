@@ -23,7 +23,7 @@
         function getData (req, res){
             console.log("GET Telemetry");
             
-            provider.get().done(function(data){
+            provider.get().then(function(data){
                 res.json(data);  
             },
             function(err){
@@ -38,7 +38,7 @@
             var data = req.body;
             console.log("POST Telemetry",data); 
 
-            provider.add(data).done(function(result){
+            provider.add(data).then(function(result){
                 res.json(result);                 
             },
             function(err){

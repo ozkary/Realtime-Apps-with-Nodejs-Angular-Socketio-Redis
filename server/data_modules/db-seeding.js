@@ -21,13 +21,13 @@ const max_points=20;
 function init(){
     var data = [];
     var ts = new Date();
-    var deviceId="0ZA-001";
+    var deviceId="0ZA-";
 
     for (var idx=0;idx<=max_points;idx++){
         let item = {};
         ts.setSeconds(idx*2);
         item.id = ts.getTime();
-        item.deviceId = deviceId;
+        item.deviceId = deviceId + getValue(100,150).toString();
         item.processed = ts.toISOString();
         item.temperature = getValue(30,40);
         item.humidity = getValue(60,69);

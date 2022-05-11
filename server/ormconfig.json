@@ -1,0 +1,24 @@
+{
+   "type": "mssql",
+   "host": "localhost\\sqlexpress",
+   "port": 1433,
+   "username": "appuser",
+   "password": "testing",
+   "database": "Dataimport",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "models/entity/*.json"
+   ],
+   "migrations": [
+      "models/migration/*.js"
+   ],
+   "subscribers": [
+      "models/subscriber/*.js"
+   ],
+   "cli": {
+      "entitiesDir": "models/entity",
+      "migrationsDir": "models/migration",
+      "subscribersDir": "models/subscriber"
+   }
+}

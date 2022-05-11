@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "importHelpers": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -16,10 +17,17 @@
       "dom"
     ],
     "baseUrl": "./src",
-    "paths":{
-      "@app.core/*":["app/core/*"],
-      "@app.features/*":["app/features/*"],      
-      "@env/*":["environments/*"]
-    }
+    "paths": {
+      "@app.core/*": [
+        "app/core/*"
+      ],
+      "@app.features/*": [
+        "app/features/*"
+      ],
+      "@env/*": [
+        "environments/*"
+      ]
+    },
+    "module": "es2015"
   }
 }
