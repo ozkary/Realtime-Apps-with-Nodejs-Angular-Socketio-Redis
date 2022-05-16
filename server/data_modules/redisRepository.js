@@ -91,7 +91,7 @@
     });
 
     client.on('end', () => {
-        console.log(tag,'Redis closed')
+        console.log(tableName,'Redis closed')
     });
 
     /**

@@ -84,4 +84,5 @@ app.listen(APP_PORT, function () {
   console.log("The API server run on localhost:"+ `${config.PORT}`);
   console.log("The test app runs on localhost:"+ `${config.SOCKET.port}`);
   console.log("Redis server run on localhost:"+ `${config.REDIS.port}`);
+  console.log("Redis channel name: telemetry:data");
 });
