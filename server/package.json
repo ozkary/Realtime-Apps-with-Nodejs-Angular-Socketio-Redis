@@ -9,7 +9,7 @@
       "@types/node": "^11.9.0",
       "body-parser": "^1.18.2",
       "ejs": "~0.8.5",
-      "express": "~3.4.6",
+      "express": "~4.17.3",
       "express-device": "~0.3.7",
       "mssql": "^4.3.1",
       "q": "^1.5.1",
