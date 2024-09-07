@@ -65,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ozkary-realtime-client:build"
+            "buildTarget": "ozkary-realtime-client:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ozkary-realtime-client:build:production"
+              "buildTarget": "ozkary-realtime-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ozkary-realtime-client:build"
+            "buildTarget": "ozkary-realtime-client:build"
           }
         },
         "test": {
