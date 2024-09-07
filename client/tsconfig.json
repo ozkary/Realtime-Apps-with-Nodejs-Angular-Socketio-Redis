@@ -28,6 +28,6 @@
         "environments/*"
       ]
     },
-    "module": "es2015"
+    "module": "esnext"
   }
 }
