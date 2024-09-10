@@ -10,7 +10,7 @@
       "@types/node": "^11.9.0",
       "body-parser": "^1.20.3",
       "ejs": "~3.1.7",
-      "express": "~3.4.6",
+      "express": "~4.20.0",
       "express-device": "~0.3.7",
       "mssql": "^11.0.1",
       "mysql": "^2.14.1",
