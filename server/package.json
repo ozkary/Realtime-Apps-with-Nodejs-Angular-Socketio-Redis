@@ -19,7 +19,7 @@
       "reflect-metadata": "^0.2.2",
       "socket.io": "^2.5.1",
       "socket.io-client": "^2.0.4",
-      "typeorm": "0.2.13"
+      "typeorm": "0.3.0"
    },
    "devDependencies": {
       "@types/node": "^8.0.29",
