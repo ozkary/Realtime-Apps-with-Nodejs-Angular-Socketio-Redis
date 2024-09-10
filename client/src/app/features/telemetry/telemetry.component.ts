@@ -1,7 +1,6 @@
 import { Component, OnInit , ViewChild, ElementRef} from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import * as Plotly from 'plotly.js';
+import { Observable, Subscription } from 'rxjs';
+import Plotly from 'plotly.js-dist-min';
 
 //app data from api or socket
 //TODO change provider on telemetry.component.ts
@@ -49,13 +48,13 @@ export class TelemetryComponent implements OnInit {
   }
 
   /**
-   * creates the temperature line-graph
+   * creates the line-graphs
    */
   public async buildCharts(data: Telemetry[]) {
     const elmTmpChart = this.chartTemp.nativeElement;
     const elmSndChart = this.chartSound.nativeElement;
 
-      const traceProps: any = {
+      const traceProps: Partial<Plotly.PlotData> = {
             mode: 'lines+markers',
             type: 'scatter',
             text: [],
@@ -67,44 +66,65 @@ export class TelemetryComponent implements OnInit {
             //,showlegend: true
       };
 
-      const temperature: Partial<Plotly.PlotData>[] = [{
-        x: data.map(dim => formatDate(dim.processed)),
-        y: data.map(dim => dim.temperature)
-      }];
-
-      const sound:  Partial<Plotly.PlotData>[]  = [{
-        x: data.map(dim => formatDate(dim.processed)),
-        y: data.map(dim => dim.sound),
-      }];
-
       function formatDate(dt) {
-          const d = (new Date(dt));
-          d.setHours(d.getHours() - (d.getTimezoneOffset() / 60));
-          return d.toISOString();
+        const d = (new Date(dt));
+        d.setHours(d.getHours() - (d.getTimezoneOffset() / 60));
+        return d.toISOString();
       }
 
-      const layout: any = {
-        margin: { t: 0 }
-      };
+      const dateSeries = data.map(dim => formatDate(dim.processed));
+      const tempSeries =  data.map(dim => dim.temperature);
+      const soundSeries = data.map(dim => dim.sound);
 
-     Plotly.purge(elmTmpChart);
-     // if (!this.plotTemperature) {
-        Object.assign(temperature, traceProps);
-        this.plotTemperature = await Plotly.plot(elmTmpChart, temperature, layout,
-                        { displayModeBar: false, displaylogo: false, scrollZoom: true } );
-    //  } else {        
-    //    Plotly.extendTraces(elmTmpChart, temperature, [0]);
-        //Plotly.extendTraces(p, {text: [temperature.text], y: [[ newY ]], x: [[ newX ]]}, [0])
-    //  }
+      this.buildChart(elmTmpChart, dateSeries, tempSeries, 'Temperature', traceProps );
+      this.buildChart(elmSndChart, dateSeries, soundSeries, 'Sound', traceProps );
 
-      Plotly.purge(elmSndChart);
-     // if (!this.plotSound) {
-        Object.assign(sound, traceProps);
-        this.plotSound = await Plotly.plot( elmSndChart, sound, layout,
-                            { displayModeBar: false, displaylogo: false, scrollZoom: true } );
-     // } else {
-     //   Plotly.extendTraces(elmSndChart, sound, [0]);
-     // }
+      // const temperature: Partial<Plotly.PlotData>[] = [{
+      //   x: dateSeries,
+      //   y: tempSeries
+      // }];
+
+      // const sound:  Partial<Plotly.PlotData>[]  = [{
+      //   x: dateSeries,
+      //   y: soundSeries
+      // }];
+
+      // const layout = {
+      //   margin: { t: 0 },
+      //   title: ''
+      // };
+
+      // Plotly.purge(elmTmpChart);     
+      // Object.assign(temperature, traceProps);
+      // this.plotTemperature = await Plotly.plot(elmTmpChart, temperature, layout,
+      //                 { displayModeBar: false, displaylogo: false, scrollZoom: true } );
+    
+      // Plotly.purge(elmSndChart);     
+      // Object.assign(sound, traceProps);
+      // this.plotSound = await Plotly.plot( elmSndChart, sound, layout,
+      
+  }
+
+  public async buildChart(elmChart: HTMLElement, x: string[], y: number[], title = 'Chart', traceProps: Partial<Plotly.PlotData>) {
+
+    const layout = {
+      margin: { t: 0 },
+      autosize: true,
+      title: title
+    };
+
+    const series: Partial<Plotly.PlotData>[] = [{
+      x: x,
+      y: y
+    }];
+
+    Plotly.purge(elmChart);
+        
+    Object.assign(series, traceProps);
+    const plot = await Plotly.newPlot(elmChart, series, layout,{ displayModeBar: false, displaylogo: false, scrollZoom: true } );
+
+    // resize chart for responsiveness
+    // Plotly.Plots.resize();
   }
 
 }

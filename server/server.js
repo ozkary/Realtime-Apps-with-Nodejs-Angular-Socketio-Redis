@@ -20,22 +20,23 @@
     */
 /*
  * require modules
- * use npm isntall from the server folder to download all the dependencies
+ * use npm install from the server folder to download all the dependencies
  */
 
 // core modules
-import express from 'express';
-import bodyParser from 'body-parser';
-import { createServer } from 'http';
-import device from 'express-device';
+// core modules
+const express = require('express');
+const bodyParser = require('body-parser');
+const { createServer } = require('http');
+const device = require('express-device');
 
 // app modules
-import config from './modules/config.js';
-import headers from './modules/headers.js';
-import error from './modules/error-handler.js';
-import api from './modules/telemetry-api.js';
-import strategy from './data_modules/strategy';
-import socket from './modules/socketio.js';
+const config = require('./modules/config.js');
+const headers = require('./modules/headers.js');
+const error = require('./modules/error-handler.js');
+const api = require('./modules/telemetry-api.js');
+const strategy = require('./data_modules/strategy.js');
+const socket = require('./modules/socketio.js');
 
 const app = express();
 const server = createServer(app);
@@ -83,4 +84,12 @@ server.listen(APP_PORT, () => {
   console.log(`Redis channel name: telemetry:data`);
 });
 
+// Handle server shutdown
+process.on('SIGINT', () => {
+  console.log('Shutting down server...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
 

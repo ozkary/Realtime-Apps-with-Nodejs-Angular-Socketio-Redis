@@ -28,6 +28,7 @@
       ]
     },
     "module": "es2020",
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "esModuleInterop":true
   }
 }

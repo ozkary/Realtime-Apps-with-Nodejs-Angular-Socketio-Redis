@@ -55,5 +55,6 @@ import 'zone.js';  // Included with Angular CLI.
  */
 // resolve this error
 // nd: Error: Can't resolve 'fs' or 'Path' 
- // (window as any).global = window;
- // declare var fs: any;
+(window as any).global = window;
+declare var fs: any;
+// resolve.fallback: { "fs": false }

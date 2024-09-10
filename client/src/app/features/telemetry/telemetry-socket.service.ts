@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { io } from 'socket.io-client';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 //app imports
 import { environment } from '../../../environments/environment';
@@ -10,7 +9,9 @@ import { environment } from '../../../environments/environment';
 import { Telemetry } from './telemetry.models';
 export { Telemetry } from './telemetry.models';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'  // singleton service
+})
 export class TelemetryService {
 
   public telemetry: Observable<Telemetry[]>;  //the data from the API
