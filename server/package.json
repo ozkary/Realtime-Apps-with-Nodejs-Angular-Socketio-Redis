@@ -2,13 +2,14 @@
    "name": "ozkary-realtime",
    "description": "Realtime Data ",
    "author": "oscar garcia - ozkary",
-   "type":"commonjs",
+   "type": "commonjs",
    "version": "1.5.0",
    "main": "server.js",
-   "private": true,  
+   "private": true,
    "dependencies": {
       "@types/node": "^11.9.0",
       "body-parser": "^1.20.3",
+      "cors": "^2.8.5",
       "ejs": "~3.1.7",
       "express": "~3.4.6",
       "express-device": "~0.3.7",
@@ -17,12 +18,11 @@
       "q": "^1.5.1",
       "redis": "^2.8.0",
       "reflect-metadata": "^0.2.2",
-      "socket.io": "^2.5.1",
-      "socket.io-client": "^2.0.4",
-      "typeorm": "0.2.13"
+      "socket.io": "4.7.5",
+      "typeorm": "0.3.20"
    },
    "devDependencies": {
-      "@types/node": "^8.0.29",
+      "@types/node": "^11.9.0",
       "bower": "~1.8.14",
       "connect-livereload": "^0.6.1",
       "grunt": "^1.6.1",

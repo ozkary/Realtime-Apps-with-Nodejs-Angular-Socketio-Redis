@@ -24,7 +24,7 @@
         },       
         PORT: getEnv('PORT',1338),
         SOCKET:{
-            port:getEnv('SOCKETPORT',1337) ,
+            port:getEnv('SOCKETPORT',1338) ,
             whitelist:getEnv("WHITELIST","http://localhost:*"),
             message:getEnv('SOCKETMSG','telemetry'), 
             onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate', onerror:'onerror'

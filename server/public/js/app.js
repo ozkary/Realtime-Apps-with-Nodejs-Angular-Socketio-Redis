@@ -18,8 +18,8 @@
     *
     */
 // connect to the server on two different ports
-var serverUrl = 'http://127.0.0.1:';
-var socketPort = '1337';
+var serverUrl = 'http://localhost:';
+var socketPort = '1338';
 var apiPort = '1338';
 
 var socketUrl= serverUrl+socketPort;

@@ -29,6 +29,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { createServer } = require('http');
 const device = require('express-device');
+const cors = require('cors');
 
 // app modules
 const config = require('./modules/config.js');
@@ -39,7 +40,24 @@ const strategy = require('./data_modules/strategy.js');
 const socket = require('./modules/socketio.js');
 
 const app = express();
-const server = createServer(app);
+// const server = createServer(app);
+
+const server = createServer(app, (req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Real-time app staring\n');
+});
+
+// cors configuration
+const whitelist = ['http://localhost:4200','http://localhost:1338'];
+const corsOptions = {
+  origin: function (origin, callback) {    
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
 
 // Middleware and Configuration
 app.use(express.static(__dirname + '/public'));
@@ -47,6 +65,7 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname +'/views');
 app.use(device.capture());
 app.use(bodyParser.json());
+app.use(cors(corsOptions));
 
 
 //TODO repository strategy

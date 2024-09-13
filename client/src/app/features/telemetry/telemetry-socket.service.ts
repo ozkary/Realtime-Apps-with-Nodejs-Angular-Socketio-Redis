@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { io } from 'socket.io-client';
+import * as io from 'socket.io-client';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 //app imports
@@ -16,7 +16,8 @@ export class TelemetryService {
 
   public telemetry: Observable<Telemetry[]>;  //the data from the API
   private baseUrl: string;
-  private socket: any;
+  private socket: io.Socket;
+  public connectionState: BehaviorSubject<string> = new BehaviorSubject<string>('disconnected');
 
   private messages: {
     onCreated: string;
@@ -28,7 +29,7 @@ export class TelemetryService {
   //private storage manage by the service
   private storage: {
     telemetry: Telemetry[];
-  };
+  };  
 
   constructor() {
     this.baseUrl = environment.telemetry.socket.host;
@@ -37,26 +38,28 @@ export class TelemetryService {
     this.messages.onCreated = environment.telemetry.socket.oncreate;
     this.storage = {telemetry: []};
     this.telemetrySubject = <BehaviorSubject<Telemetry[]>> new BehaviorSubject([]);
-    this.telemetry = this.telemetrySubject.asObservable();
+    this.telemetry = this.telemetrySubject.asObservable();    
    }
 
    public init() {
 
-      this.socket = io(this.baseUrl);
+      this.socket = io.connect(this.baseUrl, {transports: ['websocket'], reconnection: true });
 
       this.socket.on(this.messages.onConnected, (data) => {
             console.log(this.messages.onConnected, data);
 
             this.storage.telemetry = <Telemetry[]>data;
-            this.updateStorage(null);
+            this.updateStorage();
+            this.connectionState.next(this.messages.onConnected);
       });
 
       this.socket.on(this.messages.onCreated, (data) => {
           console.log(this.messages.onCreated, data);
           this.storage.telemetry.push(data);
-          const item: Telemetry[] = [];
-          item.push(data);
-          this.updateStorage(item);
+          // const item: Telemetry[] = [];
+          // item.push(data);
+          this.updateStorage();
+          this.connectionState.next(this.messages.onCreated);
       });
 
       this.socket.on('error', (data) => {
@@ -64,32 +67,43 @@ export class TelemetryService {
       });
 
       this.socket.on('connect', () => {
-        console.log('connect');
+        console.log('socket connected');
+        this.connectionState.next('connected');
       });
 
+      this.socket.on('connect_error', (err) => {
+        console.log('socket error', err);
+        this.connectionState.next('error');
+
+      });
+
+
+      this.socket.on('disconnect', () => {
+        console.log('socket disconnected');        
+        this.connectionState.next('disconnected');
+      });
 
       return () => {
         this.socket.disconnect();
       };
   }
 
+  public close = () => {
+    this.socket.disconnect();
+  }
+
   /**
    * updates the storage
    */
-  private updateStorage(data: Telemetry[]) {
+  private updateStorage() {
 
-    //limit to 20 data points
-    if (this.storage.telemetry.length > 40) {
+    //limit the data points
+    if (this.storage.telemetry.length > 25) {
       this.storage.telemetry.shift();
     }
 
     const clone = Object.assign({}, this.storage);
-
-    if (data) {
-      //this.telemetrySubject.next(data);  //emit the data
-      this.telemetrySubject.next(clone.telemetry);  //emit the data
-    } else {
-      this.telemetrySubject.next(clone.telemetry);  //emit the data
-    }
+    this.telemetrySubject.next(clone.telemetry);  //emit the data
+    
   }
 }

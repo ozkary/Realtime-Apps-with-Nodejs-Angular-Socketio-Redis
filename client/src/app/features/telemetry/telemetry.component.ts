@@ -1,4 +1,4 @@
-import { Component, OnInit , ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit , OnDestroy , ViewChild, ElementRef} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import Plotly from 'plotly.js-dist-min';
 
@@ -11,13 +11,17 @@ import { Telemetry, TelemetryService} from './telemetry.factory'; //socket servi
   templateUrl: './telemetry.component.html',
   styleUrls: ['./telemetry.component.css']
 })
-export class TelemetryComponent implements OnInit {
+export class TelemetryComponent implements OnInit, OnDestroy {
   public telemetry: Observable<Telemetry[]>;
   public itemCount: number;
   private svcTelemetry: TelemetryService;
   private  telemetrySubscription: Subscription;
-  private plotTemperature: Plotly.PlotlyHTMLElement;
-  private plotSound: Plotly.PlotlyHTMLElement;
+  // private plotTemperature: Plotly.PlotlyHTMLElement;
+  // private plotSound: Plotly.PlotlyHTMLElement;
+
+  public tmpValues: number[] = [];
+  public sndValues: number[] = [];
+  public hmdValues: number[] = [];
 
   //chart elements
   @ViewChild('chartTemperature')
@@ -35,6 +39,9 @@ export class TelemetryComponent implements OnInit {
     this.svcTelemetry.init();
     this.telemetrySubscription = this.telemetry.subscribe(data => {
       if (data && data.length > 0) {
+        this.tmpValues = data.map(item => item.temperature);
+        this.sndValues = data.map(item => item.sound);
+        this.hmdValues = data.map(item => item.humidity);
         this.buildCharts(data);
       }
 
@@ -45,6 +52,9 @@ export class TelemetryComponent implements OnInit {
     // prevent memory leak
     //on the template the async pipe auto-unsubscribe
     this.telemetrySubscription.unsubscribe();
+    if (this.svcTelemetry.close) {
+      this.svcTelemetry.close();
+    }
   }
 
   /**
@@ -58,6 +68,7 @@ export class TelemetryComponent implements OnInit {
             mode: 'lines+markers',
             type: 'scatter',
             text: [],
+            connectgaps: false,
             marker: {
                 color: 'blue',
                 size: 14,
@@ -66,53 +77,37 @@ export class TelemetryComponent implements OnInit {
             //,showlegend: true
       };
 
-      function formatDate(dt) {
-        const d = (new Date(dt));
+      function formatDate(d: Date): Date {
+        // const d = (new Date(dt));
         d.setHours(d.getHours() - (d.getTimezoneOffset() / 60));
-        return d.toISOString();
+        return d;
+      }      
+      
+      function formatItem(item: Telemetry) : Telemetry{
+        item.processed = formatDate(item.processed);
+        return item;
       }
 
-      const dateSeries = data.map(dim => formatDate(dim.processed));
-      const tempSeries =  data.map(dim => dim.temperature);
-      const soundSeries = data.map(dim => dim.sound);
+      const series  =  data.map(item => formatItem(item)).sort( (a,b) => a.processed.getTime() - b.processed.getTime());
+            
+      const dateSeries = series.map(dim => dim.processed)      
+      const tempSeries =  series.map(dim => dim.temperature);
+      const soundSeries = series.map(dim => dim.sound);
 
       this.buildChart(elmTmpChart, dateSeries, tempSeries, 'Temperature', traceProps );
       this.buildChart(elmSndChart, dateSeries, soundSeries, 'Sound', traceProps );
-
-      // const temperature: Partial<Plotly.PlotData>[] = [{
-      //   x: dateSeries,
-      //   y: tempSeries
-      // }];
-
-      // const sound:  Partial<Plotly.PlotData>[]  = [{
-      //   x: dateSeries,
-      //   y: soundSeries
-      // }];
-
-      // const layout = {
-      //   margin: { t: 0 },
-      //   title: ''
-      // };
-
-      // Plotly.purge(elmTmpChart);     
-      // Object.assign(temperature, traceProps);
-      // this.plotTemperature = await Plotly.plot(elmTmpChart, temperature, layout,
-      //                 { displayModeBar: false, displaylogo: false, scrollZoom: true } );
-    
-      // Plotly.purge(elmSndChart);     
-      // Object.assign(sound, traceProps);
-      // this.plotSound = await Plotly.plot( elmSndChart, sound, layout,
-      
+            
   }
 
-  public async buildChart(elmChart: HTMLElement, x: string[], y: number[], title = 'Chart', traceProps: Partial<Plotly.PlotData>) {
+  public async buildChart(elmChart: HTMLElement, x: Date[], y: number[], title = 'Chart', traceProps: Partial<Plotly.PlotData>) {
 
     const layout = {
-      margin: { t: 0 },
+      margin: { l: 50, r: 50, t: 50, b: 50 }, // Adjust margins as needed
       autosize: true,
+      height: 300, // Limit the maximum height      
       title: title
     };
-
+      
     const series: Partial<Plotly.PlotData>[] = [{
       x: x,
       y: y
