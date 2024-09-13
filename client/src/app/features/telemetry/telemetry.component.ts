@@ -77,8 +77,8 @@ export class TelemetryComponent implements OnInit, OnDestroy {
             //,showlegend: true
       };
 
-      function formatDate(d: Date): Date {
-        // const d = (new Date(dt));
+      function formatDate(dt: Date): Date {
+        const d = (new Date(dt));
         d.setHours(d.getHours() - (d.getTimezoneOffset() / 60));
         return d;
       }      

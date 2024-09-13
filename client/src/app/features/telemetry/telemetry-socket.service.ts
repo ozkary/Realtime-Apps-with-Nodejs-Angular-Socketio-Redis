@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 
 //import/export the models
 import { Telemetry } from './telemetry.models';
+import { ControlEvent } from '@angular/forms';
 export { Telemetry } from './telemetry.models';
 
 @Injectable({
@@ -98,12 +99,15 @@ export class TelemetryService {
   private updateStorage() {
 
     //limit the data points
-    if (this.storage.telemetry.length > 25) {
+    if (this.storage && this.storage.telemetry?.length > 25) {
       this.storage.telemetry.shift();
     }
 
     const clone = Object.assign({}, this.storage);
-    this.telemetrySubject.next(clone.telemetry);  //emit the data
     
+    if (clone && clone.telemetry){
+      this.telemetrySubject.next(clone.telemetry);  //emit the data
+    }
+        
   }
 }
