@@ -8,5 +8,6 @@ export const environment = {
   telemetry:{
     serverUrl:'//localhost:1338/api/telemetry',
     socket:{host:'//localhost:1338',message:'telemetry',onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate'}   
-  } 
+  },
+  serviceType: 'api'
 };

@@ -1,7 +1,7 @@
 'use strict';
 /*!
     * Copyright 2018-2022 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -33,7 +33,55 @@ const redisRepository = require('./redisRepository');  //redis repo
 const brokerRepository = require('../modules/message-broker');    //message broker
 
 // export the different providers
-module.exports.inProc = inProcRepository;
-module.exports.sql = sqlRepository;
-module.exports.redis = redisRepository;
-module.exports.broker = brokerRepository;
+// module.exports.inProc = inProcRepository;
+// module.exports.sql = sqlRepository;
+// module.exports.redis = redisRepository;
+// module.exports.broker = brokerRepository;
+
+/**
+ * service type
+ */
+const ServiceType = {
+    InProc: 'inProc',
+    SQL: 'sql',
+    REDIS: 'redis',
+    BROKER: 'broker'
+};
+
+/**
+ * Strategy object which provides the different repos
+ */
+const RepoStrategy = {
+    [ServiceType.InProc]: inProcRepository,
+    [ServiceType.SQL]: sqlRepository,
+    [ServiceType.REDIS]: redisRepository,
+    [ServiceType.BROKER]: brokerRepository
+};
+
+
+/**
+ * Factory function to create the corresponding strategy services
+ * @param {ServiceType} type 
+ * @param {server app} server  
+ * @returns the repo instance
+ */
+function createRepository(type, server) {
+    
+    let repository = RepoStrategy[type];
+
+    if (!repository){
+        throw new Error('Invalid repository type');
+    }
+    
+    if (type === ServiceType.BROKER) {
+        // initialize the broker strategy with SQL and REDIS
+        repository.init(RepoStrategy[ServiceType.SQL], RepoStrategy[ServiceType.REDIS]);
+    }       
+
+    return repository;
+}
+
+module.exports = {
+    ServiceType,
+    createRepository
+};

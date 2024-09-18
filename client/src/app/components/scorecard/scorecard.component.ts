@@ -11,7 +11,7 @@ export class ScorecardComponent implements OnChanges {
   @Input() unit: string;
   @Input() bgClass: string;
   
-  value: number;
+  value: number = 0;
 
 
   ngOnChanges(changes: SimpleChanges) {
@@ -20,7 +20,7 @@ export class ScorecardComponent implements OnChanges {
     }
   }
 
-  private calculateHighestValue() {
-    this.value = Math.max(...this.values);
+  private calculateHighestValue() {    
+    this.value = (this.values?.length > 0) ? Math.max(...this.values) : 0;
   }
 }

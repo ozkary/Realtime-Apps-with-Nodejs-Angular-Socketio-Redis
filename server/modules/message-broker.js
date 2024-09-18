@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app

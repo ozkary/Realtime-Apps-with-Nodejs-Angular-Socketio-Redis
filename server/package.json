@@ -41,6 +41,7 @@
       "grunt-wait": "^0.3.0",
       "matchdep": "~2.0.0",
       "moment": "~2.29.2",
+      "nodemon": "^1.19.4",
       "ts-node": "3.3.0",
       "typescript": "^5.5.4"
    },
@@ -48,7 +49,8 @@
       "node": ">=0.8.0"
    },
    "scripts": {
-      "start": "node server.js",
+      "start-prod": "node server.js",
+      "start": "nodemon server.js",
       "build": "tsc"
    },
    "license": "ISC"

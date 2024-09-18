@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -15,12 +15,14 @@
 */    
     const { DataSource } = require('typeorm');
     const connConfig = require('../ormconfig.json');
-    const seedData = require('./db-seeding.js');
+    const seedData  = require('./db-seeding.js');
       
     //export functions
-    module.exports.get = getTelemetry;
-    module.exports.add= addTelemetry;   
-    module.exports.subscribe= null;         //no pubsub support
+    module.exports = {
+        get: getTelemetry,
+        add: addTelemetry,
+        subscribe: null         //no pubsub support
+    }
       
     let dataSource = null;
 
@@ -37,17 +39,17 @@
             const timeRange = new Date(ts.setHours(ts.getHours() - 1));
             const dateFilter = timeRange.toLocaleDateString() + ' ' + timeRange.toLocaleTimeString();
         
-            const data = await repository.createQueryBuilder()
+            let data = await repository.createQueryBuilder()
               .where("telemetry.processed >= :dt", { dt: dateFilter })
               .getMany();
         
             if (data.length === 0) {
-              const seedData = seedData.init();
-              await seedTable(repository, seedData);
-              return seedData;
-            } else {
-              return data;
+              data = seedData.init();
+              await seedTable(repository, data);              
             }
+            
+            return data;
+            
         } catch (error) {
             handleError(error);
             throw error; // Re-throw the error to propagate it to the caller
@@ -74,6 +76,7 @@
             
             const repository = conn.getRepository("telemetry");        
             const savedItem = await repository.save(item);
+            console.log("sql repo add telemetry",item);
             return savedItem;
         
         } catch (error) {

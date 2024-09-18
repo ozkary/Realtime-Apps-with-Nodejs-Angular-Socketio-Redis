@@ -1,7 +1,7 @@
 'use strict';
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -36,7 +36,7 @@ const config = require('./modules/config.js');
 const headers = require('./modules/headers.js');
 const error = require('./modules/error-handler.js');
 const api = require('./modules/telemetry-api.js');
-const strategy = require('./data_modules/strategy.js');
+const { createRepository , ServiceType } = require('./data_modules/strategy.js');
 const socket = require('./modules/socketio.js');
 
 const app = express();
@@ -68,18 +68,24 @@ app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
 
-//TODO repository strategy
-//step 1 use sql server repo
-//step 2 add the realtime socket lib
-//step 3 add redis cache
-//step 4 add message broker
-const repository = strategy.broker;
+//Repository strategy evolution
 
-// initialize the repo for the broker only with redis and sql
-repository.init(strategy.redis, strategy.sql);
-socket.init(server, config, repository);
-headers.init(app);
+// version 1 sql server repo and API integration
+const repository = createRepository(ServiceType.SQL);
 api.init(app, repository);
+
+// version 2 add the realtime socket support
+// socket.init(server, config, repository);
+
+// version 3 add redis cache support
+// const repository = createRepository(ServiceType.REDIS);
+// socket.init(server, config, repository);
+
+// version 4 add message broker with SQL and Redis support
+// const repository = createRepository(ServiceType.BROKER);
+// socket.init(server, config, repository);
+
+headers.init(app);
 error.init(app);
 
 // Routes

@@ -6,14 +6,13 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 //import/export the models
-import { Telemetry } from './telemetry.models';
-import { ControlEvent } from '@angular/forms';
+import { ITelemetryService, Telemetry } from './telemetry.models';
 export { Telemetry } from './telemetry.models';
 
 @Injectable({
   providedIn: 'root'  // singleton service
 })
-export class TelemetryService {
+export class TelemetrySocketService implements ITelemetryService {
 
   public telemetry: Observable<Telemetry[]>;  //the data from the API
   private baseUrl: string;

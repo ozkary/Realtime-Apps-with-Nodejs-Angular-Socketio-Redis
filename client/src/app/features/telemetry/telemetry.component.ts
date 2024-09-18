@@ -1,10 +1,12 @@
-import { Component, OnInit , OnDestroy , ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit , OnDestroy , ViewChild, ElementRef, Inject} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import Plotly from 'plotly.js-dist-min';
 
 //app data from api or socket
 //TODO change provider on telemetry.component.ts
-import { Telemetry, TelemetryService} from './telemetry.factory'; //socket service
+import { Telemetry,ITelemetryService, TelemetryServiceFactory} from './telemetry.factory'; //socket service
+import { environment } from '@env/environment';
+import { ServiceType } from './telemetry.models';
 
 @Component({
   selector: 'app-telemetry',
@@ -14,7 +16,7 @@ import { Telemetry, TelemetryService} from './telemetry.factory'; //socket servi
 export class TelemetryComponent implements OnInit, OnDestroy {
   public telemetry: Observable<Telemetry[]>;
   public itemCount: number;
-  private svcTelemetry: TelemetryService;
+  private svcTelemetry:ITelemetryService = null;
   private  telemetrySubscription: Subscription;
   // private plotTemperature: Plotly.PlotlyHTMLElement;
   // private plotSound: Plotly.PlotlyHTMLElement;
@@ -30,9 +32,14 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   @ViewChild('chartSound')
   private chartSound: ElementRef; //get an element reference
 
-  constructor(svc: TelemetryService) {
-    this.svcTelemetry = svc;
-   }
+  constructor(@Inject('TelemetryService') private telemetryService: ITelemetryService) {
+    this.svcTelemetry = telemetryService;
+  }
+
+  // constructor(private telemetryService: ITelemetryService) {
+  //   const serviceType = environment.serviceType as ServiceType; //"socket"
+  //   this.svcTelemetry = TelemetryServiceFactory.createService(serviceType);
+  //  }
 
   ngOnInit() {
     this.telemetry = this.svcTelemetry.telemetry; //data stream form service

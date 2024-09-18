@@ -8,5 +8,6 @@ export const environment = {
     serverUrl:'',
     incomingMsg:'',
     outgoingMsg:''
-  }
+  }, 
+  serviceType: 'api'
 };
