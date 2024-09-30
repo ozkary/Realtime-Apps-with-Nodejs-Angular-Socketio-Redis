@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -12,103 +12,110 @@
     * Update/Fix History
     *   ogarcia 01/20/2018 initial implementation
     *
-*/
-    //const q = require('q')
-    const orm =  require("typeorm");
-
-    const $dbseed = require('./db-seeding.js');
-    
-    //export functions
-    module.exports.get = getTelemetry;
-    module.exports.add= addTelemetry;   
-    module.exports.subscribe= null;         //no pubsub support
+*/    
+    const { DataSource } = require('typeorm');
+    const connConfig = require('../ormconfig.json');
+    const seedData  = require('./db-seeding.js');
       
+    //export functions
+    module.exports = {
+        get: getTelemetry,
+        add: addTelemetry,
+        subscribe: null         //no pubsub support
+    }
+      
+    let dataSource = null;
+
     /**
      * gets the telemetry info
      */
-    function getTelemetry() {
+    async function getTelemetry() {
 
-        return new Promise(async function(resolve, reject){
-           let context = init();
-           context.then( async function(conn){
-               let repository = conn.getRepository("telemetry");  
-               let ts = (new Date);               
-               let timeRange = new Date(ts.setHours(ts.getHours()-1));
-               let dateFilter = timeRange.toLocaleDateString() + ' ' + timeRange.toLocaleTimeString();
-
-               let data = await repository.createQueryBuilder()
-                                .where("telemetry.processed >= :dt", { dt: dateFilter})
-                                .getMany();
-
-                if (data.length ===0){
-                    data =$dbseed.init();
-                   await seedTable(repository, data);
-                   resolve(data);
-                   await conn.close(); 
-                }else{
-                    resolve(data);
-                    await conn.close();     
-                }
-           })
-           .catch(function(err){
-                handleError(err);
-                reject(err);              
-           });
-                      
-        });       
+        const conn = await init();   
+        try {
+            
+            const repository = conn.getRepository("telemetry");        
+            const ts = new Date();
+            const timeRange = new Date(ts.setHours(ts.getHours() - 1));
+            const dateFilter = timeRange.toLocaleDateString() + ' ' + timeRange.toLocaleTimeString();
+        
+            let data = await repository.createQueryBuilder()
+              .where("telemetry.processed >= :dt", { dt: dateFilter })
+              .getMany();
+        
+            if (data.length === 0) {
+              data = seedData.init();
+              await seedTable(repository, data);              
+            }
+            
+            return data;
+            
+        } catch (error) {
+            handleError(error);
+            throw error; // Re-throw the error to propagate it to the caller
+        } finally {
+            await conn.release();         
+        }
+        
     };
 
     /**
      * adds a new item
      * @param {*} item 
      */
-    function addTelemetry(item) {
-        var ts = (new Date());
+    async function addTelemetry(item) {
+        var ts = new Date();
         item.id = ts.getTime();
+
         if (!item.processed){
             item.processed = ts.toISOString();
         }
-       
-        return new Promise(async function(resolve, reject){
+        const conn = await init();        
 
-           let context = init();
-           context.then(async function(conn){
-                let repository = conn.getRepository("telemetry");
-                await repository.save(item).then(function(savedItem){
-                    resolve(savedItem);
-                }).catch(function(err){
-                    handleError(err);
-                });                      
-                conn.close();
-
-           })
-           .catch(function(err){               
-                handleError(err);
-                reject(err);
-                
-           });
-                        
-        });
-                
+        try {
+            
+            const repository = conn.getRepository("telemetry");        
+            const savedItem = await repository.save(item);
+            console.log("sql repo add telemetry",item);
+            return savedItem;
+        
+        } catch (error) {
+            handleError(error);
+            throw error; // Re-throw the error to propagate it to the caller
+        } finally {
+            await conn.release();            
+        }                        
      };
 
 
-     function init(){
-        var context =  orm.createConnection(
-            {"type": "mssql",
-        "host": "localhost",
-        "port": 1434,
-        "username": "appuser",
-        "password": "testing",
-        "database": "Dataimport",
-        "synchronize": false,  //true update table
-        "logging": false, 
-        "entities":[
-            new orm.EntitySchema(require("../models/entity/telemetry"))
-        ]
-    });        
-          
-        return context;
+    //  const connConfig2 = {
+    //     "type": "mssql",
+    //     "host": "localhost",
+    //     "port": 1433,
+    //     "username": "appuser",
+    //     "password": "testing",
+    //     "database": "Dataimport",
+    //     "synchronize": false,  //true update table
+    //     "logging": false, 
+    //     "connectionIsolationLevel": "READ_UNCOMMITTED",
+    //     "entities":[
+    //         new orm.EntitySchema(require("../models/entity/telemetry"))
+    //     ],
+    //     "extra": {
+    //         "encrypt": false, 
+    //         "trustServerCertificate": true
+    //     }
+    // }
+
+    async function init(){
+                
+        if (!dataSource){
+            dataSource = new DataSource(connConfig);
+            await dataSource.initialize();     
+        }
+        
+        const conn = dataSource.createQueryRunner();
+        return conn.manager;
     }
 
     function handleError(err){

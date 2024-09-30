@@ -24,10 +24,16 @@
                   <i class="fa fa-table"></i> Device Information  
                 </div>    
                 <div class="panel-body">
-                
+
+                  <div class="score-cards d-flex justify-content-around">
+                    <scorecard title="Max Temperature" [values]="tmpValues" unit="°C" bgClass="bg-danger text-white fs-3" ></scorecard>
+                    <scorecard title="Max Sound" [values]="sndValues" unit="dB" bgClass="bg-warning text-dark fs-3"></scorecard>
+                    <scorecard title="Max Humidity" [values]="hmdValues" unit="%" bgClass="bg-info text-white fs-3"></scorecard>
+                  </div>
+                  <div class="table-container">                
                     <table class="table table-bordered text-center">
                         <thead><tr><th>Device</th><th>Date</th><th>Temp</th><th>Sound</th><th>Humidity</th></tr></thead>
-                        <tr *ngFor="let item of telemetry | async" >                
+                        <tr *ngFor="let item of (telemetry | async)?.slice().reverse()" >                
                             <td>{{item.deviceId}}</td>
                             <td>{{item.processed | date:'yyyy-MM-dd HH:mm:ss'}}</td>     
                             <td>{{item.temperature}} </td>
@@ -35,7 +41,7 @@
                             <td>{{item.humidity}}</td>                  
                         </tr>
                     </table>
-                
+                  </div>                  
                 </div>
                 
         </div>  

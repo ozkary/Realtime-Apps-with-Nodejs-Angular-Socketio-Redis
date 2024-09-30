@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   telemetry:{
     serverUrl:'//localhost:1338/api/telemetry',
-    socket:{host:'//localhost:1337',message:'telemetry',onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate'}   
-  } 
+    socket:{host:'//localhost:1338',message:'telemetry',onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate'}   
+  },
+  serviceType: 'api'
 };

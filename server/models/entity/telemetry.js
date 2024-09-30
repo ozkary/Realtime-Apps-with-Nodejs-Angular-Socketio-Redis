@@ -1,4 +1,6 @@
-module.exports = {
+const { EntitySchema } = require('typeorm');
+
+module.exports = new EntitySchema({
     "name": "telemetry",
     "columns": {
         "telemetryId": {
@@ -25,4 +27,4 @@ module.exports = {
             "type": "datetime"
         }         
     }
-}
+});

@@ -1,14 +1,15 @@
-{
+{   
    "type": "mssql",
-   "host": "localhost\\sqlexpress",
+   "host": "172.22.32.1",
    "port": 1433,
    "username": "appuser",
    "password": "testing",
    "database": "Dataimport",
-   "synchronize": true,
+   "synchronize": false,
    "logging": false,
+   "connectionIsolationLevel": "READ_UNCOMMITTED",
    "entities": [
-      "models/entity/*.json"
+      "models/entity/*.js"
    ],
    "migrations": [
       "models/migration/*.js"
@@ -20,5 +21,9 @@
       "entitiesDir": "models/entity",
       "migrationsDir": "models/migration",
       "subscribersDir": "models/subscriber"
-   }
+   },
+   "extra": {
+    "encrypt": false, 
+    "trustServerCertificate": true
+  }  
 }

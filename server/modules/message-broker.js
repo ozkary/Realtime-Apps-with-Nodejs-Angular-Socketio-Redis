@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -30,14 +30,14 @@
     //checks cache if not uses storage
     function getData (){
         console.log("broker get");
-              
+                      
         return new Promise(function(resolve, reject){
                
-            getFromProvider(cache,function(data,err){
+            getFromProvider(cache, (data,err) => {
                
                 if (!data || data.length === 0){                   
-                    
-                    getFromProvider(storage,function(data, err){
+                    console.log("broker not in cache", data);
+                    getFromProvider(storage,(data, err) => {
                         if (err){
                             reject(err);
                         }else{
@@ -63,15 +63,15 @@
         
         return new Promise(function(resolve, reject){
             
-            // add to cache or storaged based on requirements
-            addToProvider(cache,item, function(data, err){
+            // add to cache or storage based on requirements
+            addToProvider(cache,item, (data, err) => {
                                 
                 if (err){
                     reject(err);
                 }else{
                     //replace with rabbitmq call 
                     //or use subscriber for the cache and route to storage
-                    addToProvider(storage,item, function(data, err){
+                    addToProvider(storage,item, (data, err) => {
                        
                         if (err){
                             reject(err);
