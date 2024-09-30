@@ -1,0 +1,31 @@
+.score-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 5px;
+  }
+  
+  .score-card {
+    flex: 1 1 calc(33.333% - 20px); /* Three columns with some spacing */
+    margin: 5px;
+    box-sizing: border-box;
+  }
+  
+  @media (max-width: 768px) {
+    .score-card {
+      flex: 1 1 100%; /* Stack vertically on smaller screens */
+    }
+  }
+
+
+  /* Make the table container take the remaining space and be scrollable */
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 250px); /* Adjust based on your layout */
+  }
+
+.table {
+width: 100%;
+table-layout: fixed;
+}

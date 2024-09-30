@@ -1,13 +1,13 @@
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
+    "importHelpers": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "ES2022",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -16,10 +16,19 @@
       "dom"
     ],
     "baseUrl": "./src",
-    "paths":{
-      "@app.core/*":["app/core/*"],
-      "@app.features/*":["app/features/*"],      
-      "@env/*":["environments/*"]
-    }
+    "paths": {
+      "@app.core/*": [
+        "app/core/*"
+      ],
+      "@app.features/*": [
+        "app/features/*"
+      ],
+      "@env/*": [
+        "environments/*"
+      ]
+    },
+    "module": "es2020",
+    "useDefineForClassFields": false,
+    "esModuleInterop":true
   }
 }

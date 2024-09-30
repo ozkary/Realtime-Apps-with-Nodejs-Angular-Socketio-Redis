@@ -1,6 +1,10 @@
-# OzkaryRealtimeClient
+# Ozkary Realtime Client Demo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.7.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
+
+```bash
+ npm install -g @angular/cli
+```
 
 ## Development server
 
