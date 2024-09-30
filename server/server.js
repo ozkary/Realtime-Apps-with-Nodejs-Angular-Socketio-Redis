@@ -24,7 +24,6 @@
  */
 
 // core modules
-// core modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const { createServer } = require('http');
@@ -67,12 +66,14 @@ app.use(device.capture());
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
+headers.init(app);
+error.init(app);
 
-//Repository strategy evolution
+//Repository strategy
 
 // version 1 sql server repo and API integration
-const repository = createRepository(ServiceType.SQL);
-api.init(app, repository);
+// const repository = createRepository(ServiceType.SQL);
+// api.init(app, repository);
 
 // version 2 add the realtime socket support
 // socket.init(server, config, repository);
@@ -82,12 +83,8 @@ api.init(app, repository);
 // socket.init(server, config, repository);
 
 // version 4 add message broker with SQL and Redis support
-// const repository = createRepository(ServiceType.BROKER);
-// socket.init(server, config, repository);
-
-headers.init(app);
-error.init(app);
-
+const repository = createRepository(ServiceType.BROKER);
+socket.init(server, config, repository);
 // Routes
 app.get("/", (req, res) => {
   res.render('index', {});

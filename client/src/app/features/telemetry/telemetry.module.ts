@@ -21,7 +21,7 @@ import { ServiceType } from './telemetry.models';
         {
                 provide: 'TelemetryService',
                 useFactory: (httpClient: HttpClient) => {
-                    const serviceType = 'api' as ServiceType ; //api | socket environment.serviceType as ServiceType; 
+                    const serviceType = 'socket' as ServiceType ; //api | socket environment.serviceType as ServiceType; 
                     return TelemetryServiceFactory.createService(serviceType, httpClient);
                 },
                 deps: [HttpClient]
