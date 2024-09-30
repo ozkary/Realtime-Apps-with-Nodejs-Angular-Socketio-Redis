@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -16,14 +16,14 @@
     module.exports.init = function (app,provider) {
         
         //add the route for login/out handlers    
-        app.get('/api/telemetry', getData)
+        app.get('/api/telemetry', getData)    
         app.post('/api/telemetry', addData)
-    
+        
         //getData
         function getData (req, res){
             console.log("GET Telemetry");
             
-            provider.get().done(function(data){
+            provider.get().then(function(data){
                 res.json(data);  
             },
             function(err){
@@ -38,7 +38,7 @@
             var data = req.body;
             console.log("POST Telemetry",data); 
 
-            provider.add(data).done(function(result){
+            provider.add(data).then(function(result){
                 res.json(result);                 
             },
             function(err){

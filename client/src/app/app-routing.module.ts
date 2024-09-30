@@ -7,6 +7,7 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
+  //use RouterModule.forChild(appRoutes) for lazy loading
   imports: [RouterModule.forRoot(appRoutes,
     {enableTracing:true})
   ],

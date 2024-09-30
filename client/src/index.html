@@ -26,13 +26,20 @@
                 
                 <ul class="nav navbar-nav navbar-right">
 
-                    <li><a href="//twitter.com/ozkary" target="_blank"><i class="fa fa-twitter fa-fw fa-2x"></i></a></li>
-                    <li><a href="//plus.google.com/+oscargarcia-ozkary" target="_blank"><i class="fa fa-google-plus fa-fw fa-2x"></i></a></li>
+                    <li><a href="//twitter.com/ozkary" target="_blank"><i class="fa fa-twitter fa-fw fa-2x"></i></a></li>                    
+                    <li><a href="//www.linkedin.com/in/oscardgarcia/" target="_blank"><i class="fa fa-linkedin fa-fw fa-2x"></i></a></li>
                 </ul>
             </div>
         </div>
     </header>
   <section class="container-fluid">
+      <script>
+        //0g fix to address ver breaking changes
+        if (window['global'] === undefined) {
+        window['global'] = window;
+        }
+  
+      </script>
       <app-root></app-root>
   </section>
   

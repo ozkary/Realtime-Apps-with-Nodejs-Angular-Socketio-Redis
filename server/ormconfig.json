@@ -1,0 +1,29 @@
+{   
+   "type": "mssql",
+   "host": "172.22.32.1",
+   "port": 1433,
+   "username": "appuser",
+   "password": "testing",
+   "database": "Dataimport",
+   "synchronize": false,
+   "logging": false,
+   "connectionIsolationLevel": "READ_UNCOMMITTED",
+   "entities": [
+      "models/entity/*.js"
+   ],
+   "migrations": [
+      "models/migration/*.js"
+   ],
+   "subscribers": [
+      "models/subscriber/*.js"
+   ],
+   "cli": {
+      "entitiesDir": "models/entity",
+      "migrationsDir": "models/migration",
+      "subscribersDir": "models/subscriber"
+   },
+   "extra": {
+    "encrypt": false, 
+    "trustServerCertificate": true
+  }  
+}
