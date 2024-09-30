@@ -1,76 +1,117 @@
 'use strict';
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
     * Realtime web clients with socketio and redis    
     * ver. 1.0.0
+    * 
+    * Repo: 
+    * https://github.com/ozkary/Realtime-Apps-with-Nodejs-Angular-Socketio-Redis
     *
     * Created By oscar garcia 
     *
     * Update/Fix History
     *   ogarcia 01/20/2018 initial implementation
+    *   ogarcia 09/07/2024 update to latest dependencies
     *
     */
 /*
  * require modules
- * use npm init to download all the dependencies
+ * use npm install from the server folder to download all the dependencies
  */
 
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var server = require('http').createServer(app);
-var device  = require('express-device');
+// core modules
+const express = require('express');
+const bodyParser = require('body-parser');
+const { createServer } = require('http');
+const device = require('express-device');
+const cors = require('cors');
 
-app.configure(function(){
-	// I need to access everything in '/public' directly
-	app.use(express.static(__dirname + '/public'));
-	//set the view engine
-	app.set('view engine', 'ejs');
-	app.set('views', __dirname +'/views');
-	app.use(device.capture());
+// app modules
+const config = require('./modules/config.js');
+const headers = require('./modules/headers.js');
+const error = require('./modules/error-handler.js');
+const api = require('./modules/telemetry-api.js');
+const { createRepository , ServiceType } = require('./data_modules/strategy.js');
+const socket = require('./modules/socketio.js');
+
+const app = express();
+// const server = createServer(app);
+
+const server = createServer(app, (req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Real-time app staring\n');
 });
 
-//app.use(bodyParser.urlencoded({ extended: false }));
+// cors configuration
+const whitelist = ['http://localhost:4200','http://localhost:1338'];
+const corsOptions = {
+  origin: function (origin, callback) {    
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+// Middleware and Configuration
+app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'ejs');
+app.set('views', __dirname +'/views');
+app.use(device.capture());
 app.use(bodyParser.json());
+app.use(cors(corsOptions));
 
-//js app to act as a device
-app.get("/", function(req, res){
-  res.render('index', {}); 
+headers.init(app);
+error.init(app);
+
+//Repository strategy
+
+// version 1 sql server repo and API integration
+// const repository = createRepository(ServiceType.SQL);
+// api.init(app, repository);
+
+// version 2 add the realtime socket support
+// socket.init(server, config, repository);
+
+// version 3 add redis cache support
+// const repository = createRepository(ServiceType.REDIS);
+// socket.init(server, config, repository);
+
+// version 4 add message broker with SQL and Redis support
+const repository = createRepository(ServiceType.BROKER);
+socket.init(server, config, repository);
+// Routes
+app.get("/", (req, res) => {
+  res.render('index', {});
 });
 
-//include required modules
-var $config = require('./modules/config.js');            //configuration
-var $headers = require('./modules/headers.js');		      //access-control headers
-var $error = require('./modules/error-handler.js');		  //error handler
-var $api = require('./modules/telemetry-api.js');		    //apis
+// Start the Server
+const APP_PORT = config.PORT;
+server.listen(APP_PORT, () => {
+  const host = server.address().address;
+  const port = server.address().port;
 
-//STEP 1 - API inproc integration
-//var $repository = require('./data_modules/inprocRepository');	  //in-proc repo
-var $repository = require('./data_modules/redisRepository');    //redis repo
-
-//initialize modules
-$headers.init(app);
-$api.init(app, $repository);                             //api routes
-$error.init(app);                                       //enable error handling
-
-//STEP 2 - add realtime socket integration
-var $socket = require('./modules/socketio.js');		      //socketio module
-$socket.init(server,$config,$repository);
-
-//STEP 3 - add redis with socket integration
-
-var APP_PORT = $config.PORT;
-var server = app.listen(APP_PORT, function () {
-  
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log("Node.js Realtime Data App by ozkary.com listening at http://%s:%s", host, port);
-  console.log("Open a browser and type the server address including the port");
-  console.log("The angular client runs on localhost:4200");
-  console.log("The socket client and server run on localhost:1337");
+  console.log(`Node.js Realtime Data App by ozkary.com listening at http://${host}:${port}`);
+  console.log(`Open a browser and type the server address including the port`);
+  console.log(`The angular client runs on localhost:4200`);
+  console.log(`The socket client and server run on localhost:${config.SOCKET.port}`);
+  console.log(`The API server runs on localhost:${config.PORT}`);
+  console.log(`The test app runs on localhost:${config.SOCKET.port}`);
+  console.log(`Redis server runs on localhost:${config.REDIS.port}`);
+  console.log(`Redis channel name: telemetry:data`);
 });
+
+// Handle server shutdown
+process.on('SIGINT', () => {
+  console.log('Shutting down server...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+

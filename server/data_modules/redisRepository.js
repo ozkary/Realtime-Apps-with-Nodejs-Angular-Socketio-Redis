@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -13,8 +13,7 @@
     *   ogarcia 01/20/2018 initial implementation
     *
 */    
-    var redis = require('redis');
-    var q = require('q')
+    var redis = require('redis');    
     var $config = require('../modules/config');
     var $dbseed = require('./db-seeding.js');
 
@@ -25,7 +24,7 @@
     //export functions      
     module.exports.get = getTelemetry;
     module.exports.add=  addTelemetry;
-    module.exports.subscribe= subscribe;
+    module.exports.subscribe=subscribe; //TODO enable subscription
   
     const tableName = $config.REDIS.tablename;  //redis key to use as tablename/key
     subscribe.subscribe(tableName);             //subscribe to the table entries
@@ -36,19 +35,16 @@
     function getTelemetry(){
                
         //async operation - return a promise
-        return q.Promise(function(resolve, reject, notify){
+        return new Promise(async function(resolve, reject){
 
-            var ts = (new Date);    
-            var from  =  ts.setHours(ts.getHours()-1);      //basic date range query
-            var to  =  ts.setHours(ts.getHours()+1);       
-            var args = [tableName,from,to];    
+            let ts = (new Date);    
+            let from  =  ts.setHours(ts.getHours()-1);      //basic date range query
+            let to  =  ts.setHours(ts.getHours()+1);       
+            let args = [tableName,from,to];    
             
-            client.zrevrangebyscore(args,function(err,data){
-                
-                if (err){
-                    reject(err);
-                }
-                var result = data;
+            await client.zrangebyscore(args,function(err,data){
+                               
+                let result = data;
 
                 if (!data || data.length === 0){                   
                     result = seedDatabase(tableName);
@@ -58,8 +54,11 @@
                         result[idx]= JSON.parse(item);
                     });              
                 }
+
+                let promise = (err) ? reject : resolve;
+                let response = err || result;
                 
-                resolve(result);    //send back the promise with data
+                promise(response);    //send back the promise with data
             });
 
         });           
@@ -83,12 +82,16 @@
 
 
 
-    client.on('error', function(err){
+    client.on('error', (err) => {
         console.log('Redis error', err);
     });
   
-    client.on('ready', function(){              
+    client.on('ready', () => {              
         console.log('Redis is ready');
+    });
+
+    client.on('end', () => {
+        console.log(tableName,'Redis closed')
     });
 
     /**
@@ -112,22 +115,20 @@
     function insertItem(key,item){
         var expire = $config.REDIS.expire;
 
-        return q.Promise(function(resolve, reject, notify){
+        return new Promise( async function(resolve, reject){
             var json = JSON.stringify(item);        
-            client.multi()
+            await client.multi()
             .zadd(key,item.id,json)
             .expire(key,expire)
             .publish(key,json)
-            .exec(function(err){
-    
-                if (err){
-                    reject(err);
-                }else{
-                    resolve(item);
-                }
-    
+            .exec((err)=>{
+               
+                let promise = (err) ? reject : resolve;
+                let response = err || item;
+                
+                promise(response);   
+
             });
         } );     
     }
-
-  
+ 

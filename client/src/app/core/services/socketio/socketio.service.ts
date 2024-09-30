@@ -14,11 +14,11 @@ export class SocketioService {
    * @param serverUrl 
    * @param inMsgTag 
    * @param outMsgTag 
-   */
+   */  
   constructor(serverUrl:string, inMsgTag:string, outMsgTag:string) { 
     this.serverUrl = serverUrl;
     this.inMsgTag = inMsgTag;
-    this.outMsgTag = outMsgTag;
+    this.outMsgTag = outMsgTag;    
   }
 
   public connect(): Subject<MessageEvent>{

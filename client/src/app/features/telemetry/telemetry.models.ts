@@ -1,3 +1,6 @@
+import { Observable, BehaviorSubject } from 'rxjs';
+
+export type ServiceType = 'api' | 'socket';
 
 export interface Telemetry{
     deviceId:number;
@@ -6,5 +9,11 @@ export interface Telemetry{
     temperature: number;
     humidity: number;
     sound: number;
-  }
+}
   
+export interface ITelemetryService {
+    telemetry: Observable<Telemetry[]>;
+    connectionState: BehaviorSubject<string>;
+    init(): void;
+    close(): void;    
+}

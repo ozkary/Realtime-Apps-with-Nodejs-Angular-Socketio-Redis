@@ -1,6 +1,6 @@
 /*!
-    * Copyright 2018 ozkary.com
-    * http://ozkary.com/ by Oscar Garcia
+    *
+    * https://www.ozkary.com/ by Oscar Garcia
     * Licensed under the MIT license. Please see LICENSE for more information.
     *
     * ozkary.realtime.app
@@ -12,8 +12,7 @@
     * Update/Fix History
     *   ogarcia 01/20/2018 initial implementation
     *
-*/
-    var q = require('q')
+*/    
     var $dbseed = require('../data_modules/db-seeding');
 
     var data = [];
@@ -28,7 +27,7 @@
      */
     function getTelemetry() {
 
-        return q.Promise(function(resolve, reject, notify){
+        return new Promise(function(resolve){
             
             if (data.length ===0){
                 data =$dbseed.init();
@@ -48,7 +47,7 @@
             item.processed = ts.toISOString();
         }
        
-        return q.Promise(function(resolve, reject, notify){
+        return new Promise(function(resolve){
             data.push(item);                   
             console.log("in-proc repo add telemetry",item);        
             resolve(item);
