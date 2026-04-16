@@ -1,7 +1,18 @@
 .card {
-  margin: 10px;
-  padding: 20px;
+  margin: 5px;
+  padding: 10px;
   border-radius: 10px;
-  max-height: 150px;
+  max-height: 125px;
+  width: 125px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+ display: block;
+ font-size: 1.25rem;
+}
+
+.card-text {
+ display: block;
+ font-size: 1rem;
 }
