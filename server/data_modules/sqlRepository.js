@@ -81,7 +81,7 @@
         
         } catch (error) {
             handleError(error);
-            throw error; // Re-throw the error to propagate it to the caller
+            // throw error; // Re-throw the error to propagate it to the caller
         } finally {
             await conn.release();            
         }                        

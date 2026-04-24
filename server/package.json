@@ -7,6 +7,7 @@
    "main": "server.js",
    "private": true,
    "dependencies": {
+      "@google-cloud/vertexai": "^1.12.0",
       "@types/node": "^11.9.0",
       "body-parser": "^1.20.3",
       "cors": "^2.8.5",
@@ -25,32 +26,16 @@
       "@types/node": "^11.9.0",
       "bower": "~1.8.14",
       "connect-livereload": "^0.6.1",
-      "grunt": "^1.6.1",
-      "grunt-concurrent": "^3.0.0",
-      "grunt-contrib-concat": "^2.1.0",
-      "grunt-contrib-connect": "^5.0.0",
-      "grunt-contrib-cssmin": "^5.0.0",
-      "grunt-contrib-jshint": "~3.2.0",
-      "grunt-contrib-less": "^3.0.0",
-      "grunt-contrib-sass": "^2.0.0",
-      "grunt-contrib-stylus": "^1.2.0",
-      "grunt-contrib-uglify": "^5.2.2",
-      "grunt-contrib-watch": "~1.1.0",
-      "grunt-nodemon": "^0.4.2",
-      "grunt-open": "~0.2.2",
-      "grunt-wait": "^0.3.0",
       "matchdep": "~2.0.0",
       "moment": "~2.29.2",
-      "nodemon": "^3.1.7",
-      "ts-node": "3.28.0",
       "typescript": "^5.5.4"
    },
    "engines": {
-      "node": ">=0.8.0"
+      "node": ">=20.0.0"
    },
    "scripts": {
       "start-prod": "node server.js",
-      "start": "nodemon server.js",
+      "start": "node --watch server.js",
       "build": "tsc"
    },
    "license": "ISC"

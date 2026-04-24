@@ -14,6 +14,7 @@
     *
     */
     const { Server } = require('socket.io');
+    const QualityEngineerAgent = require('./agent.quality.js');
    
     module.exports.init = init;     
 
@@ -31,6 +32,7 @@
         const onAdd = config.SOCKET.onadd;
         const onError = config.SOCKET.onerror;
         var hasSubscribed = false;
+        const agent = new QualityEngineerAgent();
         
         // server.listen(port);              
        
@@ -58,6 +60,8 @@
                     if ( typeof provider.subscribe === 'undefined' || !provider.subscribe){                        
                         console.log('oncreate', data); 
                         io.sockets.emit(onCreated,data);  //replace with pub/sub
+                        //Pass data to the Agent's "Observer" logic
+                        agent.watch(io.sockets, data);
                     }                    
                     ack();//acknowledge the client                     
                 },
@@ -94,7 +98,9 @@
                 console.log('Socket disconnect', socket);            
             });
         
-        });                          
+        });   
+        
+        return io; //return the reference to manage shutdown calls
 
     }
 

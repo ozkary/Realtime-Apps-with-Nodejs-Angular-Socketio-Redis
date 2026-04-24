@@ -9,7 +9,7 @@
    "logging": false,
    "connectionIsolationLevel": "READ_UNCOMMITTED",
    "entities": [
-      "models/entity/*.js"
+      "**/models/entity/*.js"
    ],
    "migrations": [
       "models/migration/*.js"

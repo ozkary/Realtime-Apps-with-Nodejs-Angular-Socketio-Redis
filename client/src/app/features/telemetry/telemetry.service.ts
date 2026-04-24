@@ -13,10 +13,12 @@ export { Telemetry } from './telemetry.models';
 export class TelemetryService implements ITelemetryService {
 
   public telemetry: Observable<Telemetry[]>;  //the data from the API
+  public analysis: Observable<string>;
   private baseUrl: string;
   private http: HttpClient;
   private telemetrySubject: BehaviorSubject<Telemetry[]>;
-  public connectionState: BehaviorSubject<string> = null;
+  private analysisSubject: BehaviorSubject<string>;
+  public connectionState: BehaviorSubject<string> | undefined;
 
   //private storage manage by the service
   private storage: {
@@ -27,9 +29,11 @@ export class TelemetryService implements ITelemetryService {
     this.http = http;
     this.baseUrl = environment.telemetry.serverUrl;
     this.storage = {telemetry: []};
-    this.telemetrySubject = <BehaviorSubject<Telemetry[]>> new BehaviorSubject([]);
+    this.telemetrySubject = new BehaviorSubject<Telemetry[]>([]);
     this.telemetry = this.telemetrySubject.asObservable();
-   }
+    this.analysisSubject = new BehaviorSubject<string>('');
+    this.analysis = this.analysisSubject.asObservable();
+  }
 
    public init() {
       if (this.storage.telemetry.length === 0) {

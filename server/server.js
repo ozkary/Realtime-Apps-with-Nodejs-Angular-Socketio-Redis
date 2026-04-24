@@ -84,7 +84,7 @@ error.init(app);
 
 // version 4 add message broker with SQL and Redis support
 const repository = createRepository(ServiceType.BROKER);
-socket.init(server, config, repository);
+const ioServer = socket.init(server, config, repository);
 // Routes
 app.get("/", (req, res) => {
   res.render('index', {});
@@ -106,12 +106,27 @@ server.listen(APP_PORT, () => {
   console.log(`Redis channel name: telemetry:data`);
 });
 
-// Handle server shutdown
+// Handle server shutdown ctrl+c
 process.on('SIGINT', () => {
-  console.log('Shutting down server...');
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
+  console.log('⚠️ \t Caught SIGINT. Forcefully shutting down');
+  
+  // Socket.io to close all connections immediately
+  ioServer.close(() => {
+    console.log('Socket.io server closed.');
+
+    server.close(() => {
+      console.log('HTTP server closed.');
+      process.exit(0);
+    });
+
   });
+
+  // Safety Timeout: If it hasn't closed in 5s, force exit
+  // sudo lsof -i :1338 to find the process
+  setTimeout(() => {
+    console.error('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 5000);
+
 });
 
