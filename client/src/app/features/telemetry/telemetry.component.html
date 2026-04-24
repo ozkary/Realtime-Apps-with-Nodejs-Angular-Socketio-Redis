@@ -30,6 +30,23 @@
                     <scorecard title="Max Sound" [values]="sndValues" unit="dB" bgClass="bg-warning text-dark fs-3"></scorecard>
                     <scorecard title="Max Humidity" [values]="hmdValues" unit="%" bgClass="bg-info text-white fs-3"></scorecard>
                   </div>
+
+                  <div class="analysis-section">
+                      
+                      <h5 [ngClass]="(analysis | async)?.includes('ACTION: SHUTDOWN') ? 'text-danger' : 'text-primary'" style="margin-top: 0;">
+                          <i class="fa fa-android"></i> Agent Analysis
+                      </h5>
+                      
+                      <div *ngIf="analysis | async as chatText; else monitoring" 
+                          style="font-size: 0.9em; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                          <p style="margin-bottom: 0;">{{ analysis | async }}</p>
+                      </div>
+                      
+                      <ng-template #monitoring>
+                          <small class="text-muted"><i>Awaiting system drift analysis...</i></small>
+                      </ng-template>
+                  </div>
+                  <hr style="margin: 10px 0;">
                   <div class="table-container">                
                     <table class="table table-bordered text-center">
                         <thead class="bg-primary small"><tr><th>Device</th><th>Date</th><th>Temp</th><th>Sound</th><th>Humidity</th></tr></thead>

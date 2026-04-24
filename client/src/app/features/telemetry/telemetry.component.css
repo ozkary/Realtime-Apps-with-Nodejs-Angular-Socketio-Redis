@@ -22,10 +22,21 @@
 .table-container {
     flex: 1;
     overflow-y: auto;
-    max-height: calc(100vh - 250px); /* Adjust based on your layout */
+    max-height: calc(100vh - 500px); /* Adjust based on your layout */
   }
 
 .table {
-width: 100%;
-table-layout: fixed;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.analysis-section {
+  border-color: #337ab7;
+  border-width: 1px;
+  border-style: solid;
+  margin: 15px 0; 
+  padding: 10px; 
+  border-radius: 4px;
+  min-height: 225px;
+  overflow-y: auto;
 }

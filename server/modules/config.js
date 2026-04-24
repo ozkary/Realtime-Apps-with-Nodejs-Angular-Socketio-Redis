@@ -28,7 +28,8 @@
             whitelist:getEnv("WHITELIST","http://localhost:*"),
             message:getEnv('SOCKETMSG','telemetry'), 
             onadd:'onadd',onconnect:'onconnect',oncreate:'oncreate', onerror:'onerror'
-        }        
+        },
+        PROJECT_ID:"ozkary-de-101"        
     };
       
     function getEnv(key, defaultValue){

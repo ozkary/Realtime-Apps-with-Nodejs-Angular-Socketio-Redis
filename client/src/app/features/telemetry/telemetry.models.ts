@@ -13,6 +13,7 @@ export interface Telemetry{
   
 export interface ITelemetryService {
     telemetry: Observable<Telemetry[]>;
+    analysis: Observable<string>;
     connectionState: BehaviorSubject<string>;
     init(): void;
     close(): void;    

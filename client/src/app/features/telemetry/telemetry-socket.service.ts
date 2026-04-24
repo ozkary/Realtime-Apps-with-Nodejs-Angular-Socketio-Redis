@@ -15,16 +15,20 @@ export { Telemetry } from './telemetry.models';
 export class TelemetrySocketService implements ITelemetryService {
 
   public telemetry: Observable<Telemetry[]>;  //the data from the API
+  public analysis: Observable<string>;
   private baseUrl: string;
-  private socket: io.Socket;
+  private socket: io.Socket | undefined;
+  
   public connectionState: BehaviorSubject<string> = new BehaviorSubject<string>('disconnected');
 
   private messages: {
     onCreated: string;
     onConnected: string;
+    onChat: string;
   };
 
   private telemetrySubject: BehaviorSubject<Telemetry[]>;
+  private analysisSubject: BehaviorSubject<string>;
 
   //private storage manage by the service
   private storage: {
@@ -33,12 +37,15 @@ export class TelemetrySocketService implements ITelemetryService {
 
   constructor() {
     this.baseUrl = environment.telemetry.socket.host;
-    this.messages = {onConnected: '', onCreated: ''};
+    this.messages = {onConnected: '', onCreated: '', onChat:'ai_chat'};
     this.messages.onConnected = environment.telemetry.socket.onconnect;
     this.messages.onCreated = environment.telemetry.socket.oncreate;
     this.storage = {telemetry: []};
-    this.telemetrySubject = <BehaviorSubject<Telemetry[]>> new BehaviorSubject([]);
+    this.telemetrySubject = new BehaviorSubject<Telemetry[]>([]);
     this.telemetry = this.telemetrySubject.asObservable();    
+
+    this.analysisSubject = new BehaviorSubject<string>('');
+    this.analysis = this.analysisSubject.asObservable();
    }
 
    public init() {
@@ -60,6 +67,12 @@ export class TelemetrySocketService implements ITelemetryService {
           // item.push(data);
           this.updateStorage();
           this.connectionState.next(this.messages.onCreated);
+      });
+
+      this.socket.on(this.messages.onChat, (data) => {
+          console.log(this.messages.onChat, data);
+          this.analysisSubject.next(data);
+          this.connectionState.next(this.messages.onChat);
       });
 
       this.socket.on('error', (data) => {
@@ -84,12 +97,12 @@ export class TelemetrySocketService implements ITelemetryService {
       });
 
       return () => {
-        this.socket.disconnect();
+        this.socket?.disconnect();
       };
   }
 
   public close = () => {
-    this.socket.disconnect();
+    this.socket?.disconnect();
   }
 
   /**

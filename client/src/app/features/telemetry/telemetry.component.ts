@@ -16,8 +16,9 @@ import { ServiceType } from './telemetry.models';
 export class TelemetryComponent implements OnInit, OnDestroy {
   public telemetry: Observable<Telemetry[]>;
   public itemCount: number;
-  private svcTelemetry:ITelemetryService = null;
-  private  telemetrySubscription: Subscription;
+  private svcTelemetry:ITelemetryService;
+  private  telemetrySubscription: Subscription | undefined;
+  public analysis: Observable<string> | undefined;
   // private plotTemperature: Plotly.PlotlyHTMLElement;
   // private plotSound: Plotly.PlotlyHTMLElement;
 
@@ -34,6 +35,10 @@ export class TelemetryComponent implements OnInit, OnDestroy {
 
   constructor(@Inject('TelemetryService') private telemetryService: ITelemetryService) {
     this.svcTelemetry = telemetryService;
+    this.itemCount = 0;
+    this.telemetry = this.svcTelemetry.telemetry;
+    console.log(this.svcTelemetry.analysis);
+    this.analysis = this.svcTelemetry.analysis;
   }
 
   // constructor(private telemetryService: ITelemetryService) {
@@ -42,7 +47,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   //  }
 
   ngOnInit() {
-    this.telemetry = this.svcTelemetry.telemetry; //data stream form service
+    // this.telemetry = this.svcTelemetry.telemetry; //data stream form service
     this.svcTelemetry.init();
     this.telemetrySubscription = this.telemetry.subscribe(data => {
       if (data && data.length > 0) {
@@ -58,7 +63,7 @@ export class TelemetryComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // prevent memory leak
     //on the template the async pipe auto-unsubscribe
-    this.telemetrySubscription.unsubscribe();
+    this.telemetrySubscription?.unsubscribe();
     if (this.svcTelemetry.close) {
       this.svcTelemetry.close();
     }
