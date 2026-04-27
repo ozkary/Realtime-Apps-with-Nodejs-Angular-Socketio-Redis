@@ -2,6 +2,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "importHelpers": true,
+    "types":["jest"],
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
